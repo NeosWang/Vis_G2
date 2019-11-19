@@ -1,0 +1,30 @@
+<!DOCTYPE>
+<html>
+
+<head>
+    <script src="jquery.min.js"></script>
+    <script>
+        function shit() {
+            var content= document.getElementById('content');
+            var btn=document.getElementById('btn');
+            btn.innerText="running";
+            $.ajax({
+                url:'tryNew.php',
+                dataType:"text",
+                crossDomain:true,
+                type:'get',
+                success:function(data){
+                    content.innerHTML+=data;
+                    btn.innerText="done";
+                }
+            });     
+        }
+    </script>
+</head>
+
+<body>
+    <button id="btn" onclick="shit()">shit</button>
+    <div id="content"></div>
+</body>
+
+</html>
