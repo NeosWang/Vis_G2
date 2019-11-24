@@ -1,30 +1,88 @@
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
 
 <head>
-    <script src="jquery.min.js"></script>
+    <meta charset="utf-8">
+    <title>JBI100</title>
+    <script src="public/js/jquery-3.4.1.min.js"></script>
+    <script src="public/js/echarts.min.js"></script>
     <script>
         function shit() {
-            var content= document.getElementById('content');
-            var btn=document.getElementById('btn');
-            btn.innerText="running";
             $.ajax({
-                url:'tryNew.php',
-                dataType:"text",
-                crossDomain:true,
-                type:'get',
-                success:function(data){
-                    content.innerHTML+=data;
-                    btn.innerText="done";
+                url: 'backend/wk2_ex4a.php',
+                dataType: "json",
+                crossDomain: true,
+                type: 'get',
+                success: function (data) {
+                    var option = myChart.getOption();
+                    var legend = {
+                        data: data.legend
+                    };
+                    var xAxis = {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: data.xAxis
+                    };
+                    var series = [{
+                            name: 'Birth',
+                            type: 'line',
+                            data: data.series.Birth
+                        },
+                        {
+                            name: 'Death',
+                            type: 'line',
+                            data: data.series.Death
+                        }
+                    ]
+                    option.legend = legend;
+                    option.xAxis = xAxis;
+                    option.series = series;
+                    myChart.setOption(option);
                 }
-            });     
+            });
         }
     </script>
 </head>
 
 <body>
-    <button id="btn" onclick="shit()">shit</button>
-    <div id="content"></div>
+    <button id="btn" onclick="shit()">Bang!</button>
+    <br>
+    <br>
+
+    <div id="main" style="width: 80%;height:600px;"></div>
+    <script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('main'));
+
+        var option = {
+            title: {
+                text: 'Data By Year'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                name: 'Year',
+                boundaryGap: false,
+            },
+            yAxis: {
+                name: 'People',
+                type: 'value'
+            }
+        };
+        myChart.setOption(option);
+    </script>
 </body>
 
 </html>
