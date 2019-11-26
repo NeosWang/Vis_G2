@@ -1,55 +1,39 @@
 <?php
 $rootPath = $_SERVER['DOCUMENT_ROOT'];
 include 'conn.php';
+include 'sundryFunction.php';
 
+// number of people birth and death per year from 1801
+$birthArr = GetNrPerYear('geboorte');
+$deathArr = GetNrPerYear('overlijden');
 
-$birthArr=GetNrPerYear('geboorte');
-$deathArr=GetNrPerYear('overlijden');
+$sets = array($birthArr, $deathArr);
 
-$items = array($birthArr, $deathArr);
+// unify the interval as x-axis for both birth and death
+$xAxis = GetUnionXScale($sets);
 
-$xAxis = GetYearArray($items);
 $legend = array('Birth', 'Death');
 
+// get the discrete series data under interval
 $birthSeries = GetSeriesData($xAxis, $birthArr);
 $deathSeries = GetSeriesData($xAxis, $deathArr);
 
-$res = array('xAxis' => $xAxis, 'legend' => $legend, 'series' => array('Birth' => $birthSeries, 'Death' => $deathSeries));
+$resDirthAndDeath = array('xAxis' => $xAxis, 'legend' => $legend, 'series' => array('Birth' => $birthSeries, 'Death' => $deathSeries));
 
+//research paper by University of Groningen
+//https://www.rug.nl/research/portal/files/15865622/articlesardinie21sep2014.pdf
+//north brabant estimates populations: cities 5100 & countryside 221000 on 1800
+$basicPop = 51000 + 221000;
+
+$xAxisPop = GetIntersectionXScale($sets);
+$popSeries=GetSeriesPopData($xAxisPop,$birthArr,$deathArr,$basicPop);
+
+
+
+
+$resPop=array('xAxis' => $xAxisPop, 'legend' => 'having lived', 'series' => $popSeries);
+$res=array('birthAndDeath'=>$resDirthAndDeath,'havingLived'=>$resPop);
 echo json_encode($res);
 
 
-function GetSeriesData($xAxis, $arr)
-{
-    $output = array();
-    foreach ($xAxis as $year) {
-        if (array_key_exists($year, $arr)) {
-            array_push($output, $arr[$year]);
-        } else {
-            array_push($output, null);
-        }
-    }
-    return $output;
-}
 
-
-
-function GetYearArray($items)
-{
-    if (count($items) > 0) {
-        $start = key($items[0]);
-        end($items[0]);
-        $end = key($items[0]);
-
-        foreach ($items as $item) {
-            $start = $start < key($item) ? $start : key($item);
-            end($item);
-            $end = $end > key($item) ? $end : key($item);
-        }
-        $output = array();
-        for ($i = $start; $i <= $end; $i++) {
-            array_push($output, $i);
-        }
-        return $output;
-    }
-}

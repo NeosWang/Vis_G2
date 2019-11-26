@@ -22,7 +22,7 @@ function CloseConn($conn)
 */
 function GetNrPerYear($table)
 {
-    $sql = "SELECT year, count(*) AS count FROM $table WHERE year>=1800 GROUP BY year ORDER BY year;";
+    $sql = "SELECT year, count(*) AS count FROM $table WHERE year>1800 GROUP BY year ORDER BY year;";
     $conn = OpenConn();
     $sqlRes = $conn->query($sql);
 

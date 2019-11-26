@@ -16,8 +16,9 @@
                 crossDomain: true,
                 type: 'get',
                 success: function (data) {
-                    var optionBirth = myChartBirth.getOption();
-                    var optionDeath = myChartDeath.getOption();
+                    var optionBirth = chartBirth.getOption();
+                    var optionDeath = chartDeath.getOption();
+                    var optionPop=chartPop.getOption();
 
                     var legendBirth = {
                         data: data.birth.legend
@@ -51,7 +52,7 @@
                     optionBirth.legend = legendBirth;
                     optionBirth.xAxis = xAxisBirth;
                     optionBirth.series = seriesBirth;
-                    myChartBirth.setOption(optionBirth);
+                    chartBirth.setOption(optionBirth);
 
 
                     var legendDeath = {
@@ -86,7 +87,41 @@
                     optionDeath.legend = legendDeath;
                     optionDeath.xAxis = xAxisDeath;
                     optionDeath.series = seriesDeath;
-                    myChartDeath.setOption(optionDeath);
+                    chartDeath.setOption(optionDeath);
+
+                    var legendPop = {
+                        data: data.havingLived.legend
+                    };
+                    var xAxisPop = {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: data.havingLived.xAxis
+                    };
+                    var seriesPop = [{
+                            name: 'female',
+                            type: 'bar',
+                            data: data.havingLived.series.female,
+                            itemStyle: {
+                                normal: {
+                                    color: '#F39C12'
+                                }
+                            }
+                        },
+                        {
+                            name: 'male',
+                            type: 'bar',
+                            data: data.havingLived.series.male,
+                            itemStyle: {
+                                normal: {
+                                    color: '#3498DB'
+                                }
+                            }
+                        }
+                    ]
+                    optionPop.legend = legendPop;
+                    optionPop.xAxis = xAxisPop;
+                    optionPop.series = seriesPop;
+                    chartPop.setOption(optionPop);
 
                     console.log(data);
                 }
@@ -97,25 +132,26 @@
 
 <body onload="shit()">
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <a class="navbar-brand" href="/">JBI100 Group 2</a>                          
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                  <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                      <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">JBI100 Group 2</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Week2
-                      </a>
-                      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="wk2ex4b">Ex-4-b</a>
-                            <a class="dropdown-item" href="wk2ex4c">Ex-4-c</a>
-                          </div>
-                    </li>                   
-                  </ul>
-                </div>
-              </nav>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="wk2ex4b">Ex-4-b</a>
+                        <a class="dropdown-item" href="wk2ex4c">Ex-4-c</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
 
     <div class="container">
@@ -130,16 +166,16 @@
                 <div id="mainDeath" style="width: 100%;height:500px;"></div>
             </div>
         </div>
-        <div class="row">
-<div class="col">
-<a href="/">baaaaaaaaaaaaack</a>
-</div>
+        <div class="row d-flex justify-content-center my-3">
+            <div class="text-center">Having Lived per Year</div>
+            <div id="mainPop" style="width: 100%;height:500px;"></div>
         </div>
     </div>
 
     <script type="text/javascript">
-        var myChartBirth = echarts.init(document.getElementById('mainBirth'));
-        var myChartDeath = echarts.init(document.getElementById('mainDeath'));
+        var chartBirth = echarts.init(document.getElementById('mainBirth'));
+        var chartDeath = echarts.init(document.getElementById('mainDeath'));
+        var chartPop = echarts.init(document.getElementById('mainPop'));
         option = {
             grid: {
                 left: '8%',
@@ -164,12 +200,14 @@
                 type: 'value'
             }
         };
-        myChartBirth.setOption(option);
-        myChartDeath.setOption(option);
+        chartBirth.setOption(option);
+        chartDeath.setOption(option);
+        chartPop.setOption(option);
 
         window.onresize = function () {
-            myChartBirth.resize();
-            myChartDeath.resize();
+            chartBirth.resize();
+            chartDeath.resize();
+            chartPop.resize();
         }
     </script>
 </body>
