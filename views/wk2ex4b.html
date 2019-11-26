@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>JBI100</title>
+    <link rel="stylesheet" href="public/css/bootstrap.min.css">
+    <script src="public/js/jquery-3.4.1.min.js"></script>
+    <script src="public/js/echarts.min.js"></script>
+    <script src="public/js/bootstrap.min.js"></script>
+    <script>
+        function shit() {
+            $.ajax({
+                url: 'backend/wk2_ex4b.php',
+                dataType: "json",
+                crossDomain: true,
+                type: 'get',
+                success: function (data) {
+                    var option = myChart.getOption();
+                    var legend = {
+                        data: data.legend
+                    };
+                    var xAxis = {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: data.xAxis
+                    };
+                    var series = [{
+                            name: 'Birth',
+                            type: 'line',
+                            data: data.series.Birth
+                        },
+                        {
+                            name: 'Death',
+                            type: 'line',
+                            data: data.series.Death
+                        }
+                    ]
+                    option.legend = legend;
+                    option.xAxis = xAxis;
+                    option.series = series;
+                    myChart.setOption(option);
+                    console.log(data);
+                }
+            });
+        }
+    </script>
+</head>
+
+<body onload="shit()">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="/">JBI100 Group 2</a>                          
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                  <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                      <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Week2
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="wk2ex4b">Ex-4-b</a>
+                            <a class="dropdown-item" href="wk2ex4c">Ex-4-c</a>
+                          </div>
+                    </li>                   
+                  </ul>
+                </div>
+              </nav>
+    <div class="container">
+        <div class="row d-flex justify-content-center my-3">
+            <div class="text-center">Data by Year</div>
+        </div>
+
+        <div id="main" style="width: 100%;height:600px;"></div>
+        <div class="row"><a href="wk2ex4c">aaaaaaaaaaaaaaaaaaa!</a></div>
+    </div>
+
+    <script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('main'));
+        var option = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            grid: {
+                left: '5%',
+                right: '5%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {
+                        pixelRatio: 2
+                    }
+                }
+            },
+            xAxis: {
+                type: 'category',
+                name: 'Year',
+                boundaryGap: false,
+            },
+            yAxis: {
+                name: 'People',
+                type: 'value'
+            }
+        };
+        myChart.setOption(option);
+        window.onresize = function(){
+            myChart.resize();        
+        }
+    </script>
+</body>
+
+</html>

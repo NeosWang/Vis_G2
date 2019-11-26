@@ -1,7 +1,11 @@
 <?php
 $rootPath = $_SERVER['DOCUMENT_ROOT'];
+// import mysql connection
 include 'conn.php';
+// support function
 include 'parseTool.php';
+// import genderDetecotr
+include $rootPath . '/vendor/autoload.php';
 
 $time_start = microtime(true);
 $path = $rootPath . "/data/xml/bhic_a2a_bs_o-201911.xml";
@@ -23,6 +27,8 @@ function ParseDeath($path)
 
     $sqlDeath = InitSqlDeath();
 
+    $detector = new GenderDetector\GenderDetector();
+
     while ($xml->read()) {
 
         while ($xml->nodeType == XMLReader::ELEMENT && $xml->name == 'record') {
@@ -31,7 +37,7 @@ function ParseDeath($path)
             $xmlStr = preg_replace('~(</?|\s)(a2a):~is', '$1', $xml->readOuterXML());
             $node = simplexml_load_string($xmlStr);
 
-            ParseDeathRecord($node, $sqlDeath);
+            ParseDeathRecord($node, $sqlDeath,$detector);
 
             if ($count % 50000 == 0) {
                 $sqlDeath = substr($sqlDeath, 0, strlen($sqlDeath) - 1);
@@ -50,7 +56,7 @@ function ParseDeath($path)
     if ($sqlDeath != InitSqlDeath()) {
         $sqlDeath = substr($sqlDeath, 0, strlen($sqlDeath) - 1);
         if ($conn->query(($sqlDeath))) {
-            echo 'geboorte Table Done';
+            echo 'Overlijden Table Done';
         } else {
             echo "<br>" . $conn->error;
         }
@@ -68,7 +74,7 @@ function InitSqlDeath()
 }
 
 
-function ParseDeathRecord($node, &$sqlDeath)
+function ParseDeathRecord($node, &$sqlDeath,$detector)
 {
     $pid = '';
     $fname = '';
@@ -105,6 +111,7 @@ function ParseDeathRecord($node, &$sqlDeath)
             $gender=$person['gender'];
         }
     }
+    $gender=GetPredictedGenderInt($detector,$fname,$gender);
     $sqlDeath .= "('$pid','$fname','$pname','$lname','$year','$month','$day','$gender','$region'),";
 }
 
@@ -117,6 +124,6 @@ function PersonNodeToArray($person)
     $arrPerson['fname'] = isset($person->PersonName->PersonNameFirstName) ? addslashes($person->PersonName->PersonNameFirstName) : null;
     $arrPerson['pname'] = isset($person->PersonName->PersonNamePrefixLastName) ? addslashes($person->PersonName->PersonNamePrefixLastName) : null;
     $arrPerson['lname'] = isset($person->PersonName->PersonNameLastName) ? addslashes($person->PersonName->PersonNameLastName) : null;
-    $arrPerson['gender'] = GetGenderInt($person->Gender);
+    $arrPerson['gender'] = isset ($person->Gender)?$person->Gender:null;
     return $arrPerson;
 }

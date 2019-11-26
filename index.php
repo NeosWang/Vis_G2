@@ -6,6 +6,12 @@ switch ($request) {
     case '/' :
         require __DIR__ . '/views/home.html';
         break;
+    case '/wk2ex4b':
+        require __DIR__ . '/views/wk2ex4b.html';
+        break;
+    case '/wk2ex4c':
+        require __DIR__ . '/views/wk2ex4c.html';
+        break;
     case '' :
         require __DIR__ . '/views/index.php';
         break;

@@ -1,7 +1,11 @@
 <?php
 $rootPath = $_SERVER['DOCUMENT_ROOT'];
+// import mysql connection
 include 'conn.php';
+// support function
 include 'parseTool.php';
+// import genderDetecotr
+include $rootPath . '/vendor/autoload.php';
 
 $time_start = microtime(true);
 $path = $rootPath . "/data/xml/bhic_a2a_bs_g-201911.xml";
@@ -23,6 +27,8 @@ function ParseBirth($path)
 
     $sqlBirth = InitSqlBirth();
 
+    $detector = new GenderDetector\GenderDetector();
+    
     while ($xml->read()) {
 
         while ($xml->nodeType == XMLReader::ELEMENT && $xml->name == 'record') {
@@ -31,7 +37,7 @@ function ParseBirth($path)
             $xmlStr = preg_replace('~(</?|\s)(a2a):~is', '$1', $xml->readOuterXML());
             $node = simplexml_load_string($xmlStr);
 
-            ParseBirthRecord($node, $sqlBirth);
+            ParseBirthRecord($node, $sqlBirth,$detector);
 
             if ($count % 50000 == 0) {
                 $sqlBirth = substr($sqlBirth, 0, strlen($sqlBirth) - 1);
@@ -68,7 +74,7 @@ function InitSqlBirth()
 }
 
 
-function ParseBirthRecord($node, &$sqlBirth)
+function ParseBirthRecord($node, &$sqlBirth,$detector)
 {
     $pid = '';
     $fname='';
@@ -88,7 +94,9 @@ function ParseBirthRecord($node, &$sqlBirth)
                 $fname = isset($child->PersonName->PersonNameFirstName) ? addslashes($child->PersonName->PersonNameFirstName) : null;
                 $pname = isset($child->PersonName->PersonNamePrefixLastName) ? addslashes($child->PersonName->PersonNamePrefixLastName) : null;
                 $lname = isset($child->PersonName->PersonNameLastName) ? addslashes($child->PersonName->PersonNameLastName) : null;
-                $gender = GetGenderInt($child->Gender);
+                // $gender = GetGenderInt($child->Gender);
+                $gender = GetPredictedGenderInt($detector, $fname,$child->Gender);
+
             }
         }
         elseif ($child->getName() == 'Event') {
