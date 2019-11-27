@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInitebaaf7c5fbf561bd5937618d1f38878e
 {
     public static $prefixLengthsPsr4 = array (
+        'L' => 
+        array (
+            'League\\Plates\\' => 14,
+        ),
         'G' => 
         array (
             'GenderDetector\\' => 15,
@@ -14,6 +18,10 @@ class ComposerStaticInitebaaf7c5fbf561bd5937618d1f38878e
     );
 
     public static $prefixDirsPsr4 = array (
+        'League\\Plates\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/plates/src',
+        ),
         'GenderDetector\\' => 
         array (
             0 => __DIR__ . '/..' . '/tuqqu/gender-detector/src',
