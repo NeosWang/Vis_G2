@@ -189,5 +189,4 @@ include $rootPath . '/views/tpl/header.php';
         }
     </script>
 </body>
-
-<?php include $rootPath . '/views/tpl/footer.php'; ?>
+</html>

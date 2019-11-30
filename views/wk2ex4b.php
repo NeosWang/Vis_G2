@@ -35,12 +35,12 @@ include $rootPath . '/views/tpl/header.php';
 
                 var series1 = [{
                         name: 'Birth',
-                        type: 'line',
+                        type: 'bar',
                         data: data.birthAndDeath.series.Birth
                     },
                     {
                         name: 'Death',
-                        type: 'line',
+                        type: 'bar',
                         data: data.birthAndDeath.series.Death
                     }
                 ];
@@ -125,5 +125,4 @@ include $rootPath . '/views/tpl/header.php';
         }
     </script>
 </body>
-
-<?php include $rootPath . '/views/tpl/footer.php'; ?>
+</html>

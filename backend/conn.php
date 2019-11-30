@@ -5,6 +5,13 @@ function OpenConn()
     $dbuser = "root";
     $dbpass = "";
     $db = "bhic";
+
+    // $dbhost = "studmysql01.fhict.local";
+    // $dbuser = "dbi378352";
+    // $dbpass = "i378352";
+    // $db="dbi378352";
+
+
     $conn = new mysqli($dbhost, $dbuser, $dbpass, $db) or die("Connect failed: %s\n" . $conn->error);
     return $conn;
 }
@@ -13,6 +20,25 @@ function CloseConn($conn)
 {
     $conn->close();
 }
+
+
+
+function GetFreqLastName($table,$order){
+    $sql = "SELECT lname, count(*) AS count FROM $table WHERE lname<>'N.N.' GROUP BY lname ORDER BY count $order;";
+    $conn = OpenConn();
+    $sqlRes = $conn->query($sql);
+    $outputArr = array();
+    if ($sqlRes->num_rows > 0) {
+        while ($row = $sqlRes->fetch_assoc()) {
+            $outputArr[$row['lname']] = $row['count'];
+        }
+    }
+    CloseConn($conn);
+    return $outputArr;
+}
+
+
+
 
 
 /*

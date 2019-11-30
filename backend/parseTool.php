@@ -1,6 +1,12 @@
 <?php
 $rootPath = $_SERVER['DOCUMENT_ROOT'];
 
+function GetTrimPid($pid)
+{
+    $trimHead = "{'pid': 'Person:";
+    $trimFoot = "'}";
+    return  str_replace($trimFoot, '',  str_replace($trimHead, '', $pid));
+}
 
 function GetPredictedGenderInt($detector, $fname, $gender)
 {
@@ -29,5 +35,22 @@ function GetGenderInt($gender)
             break;
         default:
             return 2;
+    }
+}
+
+function GetRelationInt($relation)
+{
+    switch ($relation) {
+        case 'Kind':
+            return 2;
+            break;
+        case 'Vader':
+            return 1;
+            break;
+        case 'Moeder':
+            return 0;
+            break;
+        default:
+            return 3;
     }
 }
