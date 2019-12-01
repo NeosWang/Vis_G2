@@ -5,6 +5,7 @@
 <script src="public/js/echarts.min.js"></script>
 <script src="public/js/bootstrap.min.js"></script>
 <script src="public/js/popper.min.js"></script>
+<script src="public/js/script.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         $('#sidebarLeftCollapse').on('click', function() {

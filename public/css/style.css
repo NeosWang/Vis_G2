@@ -4,6 +4,8 @@
 body {
     font-family: 'Raleway', sans-serif;
     background: #fafafa;
+    overflow: auto;
+    overflow-x: hidden
 }
 
 p {
@@ -14,11 +16,14 @@ p {
     color: #999;
 }
 
-a, a:hover, a:focus {
+a,
+a:hover,
+a:focus {
     color: inherit;
     text-decoration: none;
     transition: all 0.3s;
 }
+
 
 .navbar {
     padding: 15px 10px;
@@ -53,9 +58,8 @@ a, a:hover, a:focus {
 
 .wrapper {
     display: flex;
-    width: 100%;
+    max-width: 100%;
     align-items: stretch;
-    perspective: 1500px;
 }
 
 
@@ -72,7 +76,7 @@ a, a:hover, a:focus {
 .panel .sidebar-header {
     padding: 20px;
     /* background: #6d7fcc; */
-    background-color: #EC7063;
+    background-color: #F1948A;
 }
 
 .panel ul.components {
@@ -90,12 +94,18 @@ a, a:hover, a:focus {
     font-size: 1.1em;
     display: block;
 }
+
 .panel ul li a:hover {
-    color:#F1948A;
+    color: #F1948A;
     background: #fff;
 }
 
-.panel ul li.active > a, a[aria-expanded="true"] {
+.panel ul li a i:hover{
+    color: #F1948A;
+}
+
+.panel ul li.active>a,
+a[aria-expanded="true"] {
     color: #fff;
     background: #F1948A;
 }
@@ -116,7 +126,7 @@ a[data-toggle="collapse"] {
 ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
-    background: #F1948A;
+    background: #EC7063;
 }
 
 ul.CTAs {
@@ -136,20 +146,22 @@ a.download {
     color: #F1948A;
 }
 
-a.article, a.article:hover {
+a.article,
+a.article:hover {
     background: #F1948A !important;
     color: #fff !important;
 }
 
 
-.btncheck{
-    margin-left:-25px;
-    line-height : 100%;
-    vertical-align:center;
+.btncheck {
+    margin-left: -25px;
+    line-height: 100%;
+    vertical-align: center;
 }
 
-.fa-check, .fa-minus {
-    color:#F1948A;
+.fa-check,
+.fa-minus {
+    color: #F1948A;
 }
 
 
@@ -163,6 +175,16 @@ a.article, a.article:hover {
 /* ---------------------------------------------------
     CONTENT STYLE
 ----------------------------------------------------- */
+#contentLeft {
+    overflow: hidden;
+}
+
+#contentRight {
+    float: right;
+    width: 250px;
+    height: 100%;
+}
+
 #content {
     width: 100%;
     padding: 20px;
@@ -190,9 +212,11 @@ a.article, a.article:hover {
 #sidebarLeftCollapse span:first-of-type {
     transform: rotate(45deg) translate(2px, 2px);
 }
+
 #sidebarLeftCollapse span:nth-of-type(2) {
     opacity: 0;
 }
+
 #sidebarLeftCollapse span:last-of-type {
     transform: rotate(-45deg) translate(1px, -1px);
 }
@@ -213,10 +237,12 @@ a.article, a.article:hover {
         margin-left: -250px;
         transform: rotateY(90deg);
     }
+
     #sidebarLeft.active {
         margin-left: 0;
         transform: none;
     }
+
     #sidebarLeftCollapse span:first-of-type,
     #sidebarLeftCollapse span:nth-of-type(2),
     #sidebarLeftCollapse span:last-of-type {
@@ -224,16 +250,42 @@ a.article, a.article:hover {
         opacity: 1;
         margin: 5px auto;
     }
+
     #sidebarLeftCollapse.active span {
         margin: 0 auto;
     }
+
     #sidebarLeftCollapse.active span:first-of-type {
         transform: rotate(45deg) translate(2px, 2px);
     }
+
     #sidebarLeftCollapse.active span:nth-of-type(2) {
         opacity: 0;
     }
+
     #sidebarLeftCollapse.active span:last-of-type {
         transform: rotate(-45deg) translate(1px, -1px);
     }
+}
+
+
+
+.searchInput {
+    background:inherit;
+    border-bottom: 1px solid #ffffff;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    border-right: 0px;
+    width:80%;
+}
+
+
+a .searchInput{
+    color:inherit;
+}
+a .searchInput:active,
+a .searchInput:hover{
+    border-bottom: 1px solid #F1948A;
+    color: inherit;
 }
