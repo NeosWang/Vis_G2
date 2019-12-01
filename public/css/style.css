@@ -10,9 +10,9 @@ body {
 
 p {
     font-family: 'Raleway', sans-serif;
-    font-size: 1.1em;
+    font-size: 0.9em;
     font-weight: 300;
-    line-height: 1.7em;
+    line-height: 1.5em;
     color: #999;
 }
 
@@ -52,7 +52,7 @@ a:focus {
 ----------------------------------------------------- */
 
 #sidebarLeft.active {
-    margin-left: -250px;
+    margin-left: -200px;
     transform: rotateY(100deg);
 }
 
@@ -64,8 +64,8 @@ a:focus {
 
 
 .panel {
-    min-width: 250px;
-    max-width: 250px;
+    min-width: 200px;
+    max-width: 200px;
     /* background: #7386D5; */
     background: #F1948A;
     color: #fff;
@@ -91,7 +91,7 @@ a:focus {
 
 .panel ul li a {
     padding: 10px;
-    font-size: 1.1em;
+    font-size: 0.9em;
     display: block;
 }
 
@@ -124,7 +124,7 @@ a[data-toggle="collapse"] {
 }
 
 ul ul a {
-    font-size: 0.9em !important;
+    font-size: 0.8em !important;
     padding-left: 30px !important;
     background: #EC7063;
 }
@@ -135,7 +135,7 @@ ul.CTAs {
 
 ul.CTAs a {
     text-align: center;
-    font-size: 0.9em !important;
+    font-size: 0.8em !important;
     display: block;
     border-radius: 5px;
     margin-bottom: 5px;
@@ -163,6 +163,7 @@ a.article:hover {
 .fa-minus {
     color: #F1948A;
 }
+.fa { transform: scale(0.9,0.9); }
 
 
 
@@ -181,7 +182,7 @@ a.article:hover {
 
 #contentRight {
     float: right;
-    width: 250px;
+    width: 200px;
     height: 100%;
 }
 
@@ -234,7 +235,7 @@ a.article:hover {
 ----------------------------------------------------- */
 @media (max-width: 768px) {
     #sidebarLeft {
-        margin-left: -250px;
+        margin-left: -200px;
         transform: rotateY(90deg);
     }
 

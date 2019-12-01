@@ -135,7 +135,7 @@ function shit() {
                     data: data.birthAndDeath.series.Birth
                 };
           
-            optionBirthDeath.legend = legend1;
+            // optionBirthDeath.legend = legend1;
             optionBirthDeath.xAxis = xAxis1;
             optionBirthDeath.series = series1;
 

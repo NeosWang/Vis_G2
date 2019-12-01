@@ -21,7 +21,7 @@ include $rootPath . '/views/tpl/header.php';
 
             <!-- Main Content: Start -->
             <div id="contentLeft">
-                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light"> -->
                     <div class="container-fluid">
 
                         <button type="button" id="sidebarLeftCollapse" onclick="ClickCollapse()" class="navbar-btn">
@@ -29,7 +29,7 @@ include $rootPath . '/views/tpl/header.php';
                             <span></span>
                             <span></span>
                         </button>
-                        <button class="btn btn-outline-secondary d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <!-- <button class="btn btn-outline-secondary d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <i class="fa fa-angle-double-down" aria-hidden="true"></i>
                         </button>
 
@@ -42,13 +42,28 @@ include $rootPath . '/views/tpl/header.php';
                                     <a class="nav-link" href="wk2ex4c">Ex-4-c</a>
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
                     </div>
-                </nav>
+                <!-- </nav> -->
 
                 <div id="visApp">
+                <div class="row">
+                        <div id="main0" style=" width:100%;height:400px;border-style: dashed;text-align:center">
+                        word clouds  and node-link diagram
+                        </div>
+                    </div>
                     <div class="row">
-                        <div id="main1" style=" width:100%;height:200px;">
+                        <div id="main1" style=" width:100%;height:100px;">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="main2" style=" width:100%;height:100px;border-style: dashed;text-align:center">
+                        timeline2
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="main3" style=" width:100%;height:100px;border-style: dashed;text-align:center">
+                        timeline3
                         </div>
                     </div>
                     <script type="text/javascript">
@@ -79,7 +94,14 @@ include $rootPath . '/views/tpl/header.php';
                             },
                             yAxis: {
                                 name: 'People',
-                                type: 'value'
+                                type: 'value',
+                                interval:4000
+                            },
+                            grid: {
+                                left: 70,
+                                top: 30,
+                                right: 70,
+                                bottom: 20
                             }
                         };
 
