@@ -8,16 +8,16 @@ include  $rootPath . '/backend/parseTool.php';
 include $rootPath . '/vendor/autoload.php';
 
 $time_start = microtime(true);
-$path = $rootPath . "/data/xml/bhic_a2a_bs_g-201911.xml";
-// $path = $rootPath . "/data/xml/testing_birth.xml";
+$path = $rootPath . "/data/xml/bhic_a2a_bs_h-201911.xml";
+// $path = $rootPath . "/data/xml/testing_marriage.xml";
 
-ParseBirth($path);
+ParseMarriage($path);
 $time_end = microtime(true);
 print_r('<br>' . date("i:s.u", $time_end - $time_start) . '<br>');
 
 
 
-function ParseBirth($path)
+function ParseMarriage($path)
 {
     $count = 0;
 
@@ -25,7 +25,7 @@ function ParseBirth($path)
     $xml->open($path, 'UTF-8');
     $conn = OpenConn();
 
-    $sqlBirth = InitSqlBirth();
+    $sqlMarriage = InitSqlMarriage();
 
     $detector = new GenderDetector\GenderDetector();
 
@@ -37,12 +37,12 @@ function ParseBirth($path)
             $xmlStr = preg_replace('~(</?|\s)(a2a):~is', '$1', $xml->readOuterXML());
             $node = simplexml_load_string($xmlStr);
 
-            ParseBirthRecord($node, $sqlBirth, $detector);
+            ParseMarriageRecord($node, $sqlMarriage, $detector);
 
             if ($count % 50000 == 0) {
-                $sqlBirth = substr($sqlBirth, 0, strlen($sqlBirth) - 1);
-                if ($conn->query(($sqlBirth))) {
-                    $sqlBirth = InitSqlBirth();
+                $sqlMarriage = substr($sqlMarriage, 0, strlen($sqlMarriage) - 1);
+                if ($conn->query(($sqlMarriage))) {
+                    $sqlMarriage = InitSqlMarriage();
                 } else {
                     echo "<br>" . $conn->error;
                     goto end;
@@ -53,10 +53,10 @@ function ParseBirth($path)
             $xml->next('record');
         }
     }
-    if ($sqlBirth != InitSqlBirth()) {
-        $sqlBirth = substr($sqlBirth, 0, strlen($sqlBirth) - 1);
-        if ($conn->query(($sqlBirth))) {
-            echo 'geboorte Table Done';
+    if ($sqlMarriage != InitSqlMarriage()) {
+        $sqlMarriage = substr($sqlMarriage, 0, strlen($sqlMarriage) - 1);
+        if ($conn->query(($sqlMarriage))) {
+            echo 'marriage Table Done';
         } else {
             echo "<br>" . $conn->error;
         }
@@ -67,16 +67,20 @@ function ParseBirth($path)
 }
 
 
-function InitSqlBirth()
+function InitSqlMarriage()
 {
-    return "insert into birth (pid, fname, pname, lname, relation, repid, place, year, month, day, gender) values";
+    return "insert into marriage (pid, fname, pname, lname, relation, rid, place, year, month, day, gender, eyear, emonth, eday) values";
 }
 
-function ParseBirthRecord($node, &$sqlBirth, $detector)
+function ParseMarriageRecord($node, &$sqlMarriage, $detector)
 {
+    $rid = $node->header->identifier;
+
     $family = array();
-    $repid = '';
     $place = '';
+    $eyear = '';
+    $emonth = '';
+    $eday = '';
 
     foreach ($node->metadata->A2A->children() as $child) {
 
@@ -90,14 +94,13 @@ function ParseBirthRecord($node, &$sqlBirth, $detector)
             $lname = isset($child->PersonName->PersonNameLastName) ?
                 addslashes($child->PersonName->PersonNameLastName) : '';
 
-            $gender = GetPredictedGenderInt($detector, $fname, $child->Gender);
-
+            $gender = isset($child->Gender) ? $child->Gender : '';
             $year = isset($child->BirthDate->Year) ?
-                addslashes($child->BirthDate->Year) : 0;
+                $child->BirthDate->Year : 0;
             $month = isset($child->BirthDate->Month) ?
-                addslashes($child->BirthDate->Month) : 0;
+                $child->BirthDate->Month : 0;
             $day = isset($child->BirthDate->Day) ?
-                addslashes($child->BirthDate->Day) : 0;
+                $child->BirthDate->Day : 0;
 
             $family[$pid] = array(
                 'fname' => $fname,
@@ -109,45 +112,63 @@ function ParseBirthRecord($node, &$sqlBirth, $detector)
                 'gender' => $gender
             );
         } elseif ($child->getName() == 'RelationEP') {
-            $kpid = str_replace('Person:', '', $child->PersonKeyRef);
+            $pid = str_replace('Person:', '', $child->PersonKeyRef);
             $relation = GetRelationInt($child->RelationType);
-            $family[$kpid]['relation'] = $relation;
-            if ($relation == 2) {
-                $repid = $kpid;
-            }
-        } elseif ($child->getName() == 'Source') {
-            $place = addslashes($child->SourcePlace->Place);
+            
+            $family[$pid]['relation'] = $relation;
+        } elseif ($child->getName() == 'Event') {
+            $eyear = isset($child->EventDate->Year) ?
+                $child->EventDate->Year : 0;
+            $emonth = isset($child->EventDate->Month) ?
+                $child->EventDate->Month : 0;
+            $eday = isset($child->EventDate->Day) ?
+                $child->EventDate->Day : 0;
+            $place = isset($child->EventPlace->Place) ?
+                addslashes($child->EventPlace->Place) : '';
         }
     }
 
     foreach ($family as $key => $value) {
-        $sqlBirth .= "('$key',
+        $gender=$value['gender']==0?$value['relation']%2 : $value['gender'];
+        $sqlMarriage .= "('$key',
                     '{$value['fname']}',
                     '{$value['pname']}',
                     '{$value['lname']}',
                     '{$value['relation']}',
-                    '$repid',
+                    '$rid',
                     '$place',
                     '{$value['year']}',
                     '{$value['month']}',
                     '{$value['day']}',
-                    '{$value['gender']}'),";
+                    '$gender',
+                    '$eyear',
+                    '$emonth',
+                    '$eday'),";
     }
 }
 
 function GetRelationInt($relation)
 {
     switch ($relation) {
-        case 'Kind':
-            return 2;
-            break;
-        case 'Vader':
+        case 'Bruidegom':
             return 1;
             break;
-        case 'Moeder':
-            return 0;
+        case 'Vader van de bruidegom':
+            return 3;
+            break;
+        case 'Vader van de bruid':
+            return 5;
+            break;
+        case 'Bruid':
+            return 2;
+            break;
+        case 'Moeder van de bruidegom':
+            return 4;
+            break;     
+        case 'Moeder van de bruid':
+            return 6;
             break;
         default:
-            return 3;
+            return 0;
     }
 }

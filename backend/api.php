@@ -2,8 +2,7 @@
 $rootPath = $_SERVER['DOCUMENT_ROOT'];
 include $rootPath.'/backend/sundryFunction.php';
 
-function OpenConn()
-{
+function OpenConn(){
     $dbhost = "localhost";
     $dbuser = "root";
     $dbpass = "";
@@ -21,8 +20,7 @@ function OpenConn()
     return $conn;
 }
 
-function CloseConn($conn)
-{
+function CloseConn($conn){
     $conn->close();
 }
 
@@ -36,31 +34,30 @@ if (isset($_GET['func'])) {
             echo GetFreqLastName($_GET['table'], $_GET['orderby']);
             break;
         case 'fuck1':
-            echo fuck1();
+            echo fuck1($_GET['table']);
             break;
     }
 }
 
 
 
-function fuck1()
+function fuck1($table)
 {
     // number of people birth and death per year from 1801
-    $birthArr = GetNrPerYear('birth');
-    // $deathArr = GetNrPerYear('overlijden');
+    $birthArr = GetNrPerYear($table);
 
     $sets = array($birthArr);
 
     // unify the interval as x-axis for both birth and death
     $xAxis = GetUnionXScale($sets);
 
-    $legend = array('Birth');
+    $legend = array($table);
 
     // get the discrete series data under interval
     $birthSeries = GetSeriesData($xAxis, $birthArr);
     // $deathSeries = GetSeriesData($xAxis, $deathArr);
 
-    $resDirthAndDeath = array('xAxis' => $xAxis, 'legend' => $legend, 'series' => array('Birth' => $birthSeries));
+    $resDirthAndDeath = array('xAxis' => $xAxis, 'legend' => $legend, 'series' => array('data' => $birthSeries));
 
     $res = array('birthAndDeath' => $resDirthAndDeath);
     echo json_encode($res);
@@ -71,7 +68,12 @@ function fuck1()
 
 function GetNrPerYear($table)
 {
-    $sql = "SELECT year, count(*) AS count FROM $table WHERE year>1800 GROUP BY year ORDER BY year;";
+    $sql = "SELECT year, count(*) AS count FROM $table WHERE year>1800 GROUP BY year HAVING count(*)>10 ORDER BY year;";
+
+    if($table=='marriage'){
+        $sql = "SELECT eyear AS year, count(*) AS count FROM `marriage` WHERE relation=1 and eyear>0 GROUP BY eyear HAVING count(*)>10 ORDER BY eyear;";
+    }
+
     $conn = OpenConn();
     $sqlRes = $conn->query($sql);
 
@@ -85,24 +87,6 @@ function GetNrPerYear($table)
     CloseConn($conn);
     return $outputArr;
 }
-
-
-// $conn = OpenConn();
-// $sql = "SELECT pid, lname FROM birth WHERE lname<>'N.N.' limit 5;";
-// $sqlRes = $conn->query($sql);
-// $outputArr = array();
-// if ($sqlRes->num_rows > 0) {
-//     while ($row = $sqlRes->fetch_assoc()) {
-//         $outputArr[$row['pid']] = $row['lname'];
-//     }
-// }
-// CloseConn($conn);
-// echo json_encode($outputArr);
-
-
-
-
-
 
 
 

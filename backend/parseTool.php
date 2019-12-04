@@ -38,19 +38,4 @@ function GetGenderInt($gender)
     }
 }
 
-function GetRelationInt($relation)
-{
-    switch ($relation) {
-        case 'Kind':
-            return 2;
-            break;
-        case 'Vader':
-            return 1;
-            break;
-        case 'Moeder':
-            return 0;
-            break;
-        default:
-            return 3;
-    }
-}
+

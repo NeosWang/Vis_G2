@@ -4,6 +4,25 @@ $title = 'Home';
 include $rootPath . '/views/tpl/header.php';
 ?>
 
+<style>html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.chart--container {
+  min-height: 150px;
+  width: 100%;
+  height: 100%;
+}
+
+.zc-ref {
+  display: none;
+}
+zing-grid[loading]{height:450px;}</style>
+<script>ZC.LICENSE=["569d52cefae586f634c54f86dc99e6a9", "b55b025e438fa8a98e32482b5f768ff5"];
+</script>
 <body onload="Onload()">
 
     <!-- <body> -->
@@ -22,14 +41,14 @@ include $rootPath . '/views/tpl/header.php';
             <!-- Main Content: Start -->
             <div id="contentLeft">
                 <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light"> -->
-                    <div class="container-fluid">
+                <div class="container-fluid">
 
-                        <button type="button" id="sidebarLeftCollapse" onclick="ClickCollapse()" class="navbar-btn">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </button>
-                        <!-- <button class="btn btn-outline-secondary d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <button type="button" id="sidebarLeftCollapse" onclick="ClickCollapse()" class="navbar-btn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <!-- <button class="btn btn-outline-secondary d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                             <i class="fa fa-angle-double-down" aria-hidden="true"></i>
                         </button>
 
@@ -43,50 +62,46 @@ include $rootPath . '/views/tpl/header.php';
                                 </li>
                             </ul>
                         </div> -->
-                    </div>
+                </div>
                 <!-- </nav> -->
 
                 <div id="visApp">
-                <div class="row">
+                    <div class="row">
                         <div id="main0" style=" width:100%;height:400px;border-style: dashed;text-align:center">
-                        word clouds  and node-link diagram
+
+                            <div id="myChart" class="chart--container">
+                            </div>
+
+
                         </div>
                     </div>
                     <div class="row">
-                        <div id="main1" style=" width:100%;height:100px;">
+                        <div id="chartBirth" class="timeline" style=" width:100%;height:100px;">
                         </div>
                     </div>
                     <div class="row">
-                        <div id="main2" style=" width:100%;height:100px;border-style: dashed;text-align:center">
-                        timeline2
+
+                        <div id="chartDeath" class="timeline" style=" width:100%;height:100px;">
+
                         </div>
                     </div>
                     <div class="row">
-                        <div id="main3" style=" width:100%;height:100px;border-style: dashed;text-align:center">
-                        timeline3
+                        <div id="chartMarriage" class="timeline" style=" width:100%;height:100px;">
                         </div>
                     </div>
                     <script type="text/javascript">
-                        var chartBirthDeath = echarts.init(document.getElementById('main1'));
+                        var chartBirth = echarts.init(document.getElementById('chartBirth'));
+                        var chartDeath = echarts.init(document.getElementById('chartDeath'));
+                        var chartMarriage = echarts.init(document.getElementById('chartMarriage'));
                         window.onresize = function() {
-                            chartBirthDeath.resize();
+                            chartBirth.resize();
+                            chartDeath.resize();
+                            chartMarriage.resize();
                         }
                         var option = {
                             tooltip: {
                                 trigger: 'axis'
                             },
-                            // grid: {
-                            //     left: '5%',
-                            //     right: '5%',
-                            //     containLabel: true
-                            // },
-                            // toolbox: {
-                            //     feature: {
-                            //         saveAsImage: {
-                            //             pixelRatio: 2
-                            //         }
-                            //     }
-                            // },
                             xAxis: {
                                 type: 'category',
                                 name: 'Year',
@@ -95,7 +110,7 @@ include $rootPath . '/views/tpl/header.php';
                             yAxis: {
                                 name: 'People',
                                 type: 'value',
-                                interval:4000
+                                interval: 6000
                             },
                             grid: {
                                 left: 70,
@@ -115,7 +130,9 @@ include $rootPath . '/views/tpl/header.php';
 
 
 
-                        chartBirthDeath.setOption(option);
+                        chartBirth.setOption(option);
+                        chartDeath.setOption(option);
+                        chartMarriage.setOption(option);
                     </script>
                 </div>
             </div>
