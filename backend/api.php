@@ -3,15 +3,15 @@ $rootPath = $_SERVER['DOCUMENT_ROOT'];
 include $rootPath.'/backend/sundryFunction.php';
 
 function OpenConn(){
-    // $dbhost = "localhost";
-    // $dbuser = "root";
-    // $dbpass = "";
-    // $db = "bhic";
+    $dbhost = "localhost";
+    $dbuser = "root";
+    $dbpass = "";
+    $db = "bhic";
 
-    $dbhost = "studmysql01.fhict.local";
-    $dbuser = "dbi378352";
-    $dbpass = "i378352";
-    $db = "dbi378352";
+    // $dbhost = "studmysql01.fhict.local";
+    // $dbuser = "dbi378352";
+    // $dbpass = "i378352";
+    // $db = "dbi378352";
 
     $conn = mysqli_connect($dbhost, $dbuser, $dbpass, $db);
     if (mysqli_connect_errno()) {

@@ -14,9 +14,10 @@ include $rootPath . '/views/tpl/header.php';
 .zc-ref {
   display: none;
 }
+div[id$="license"] {
+  display: none !important;
+}
 zing-grid[loading]{height:450px;}</style>
-<script>ZC.LICENSE=["569d52cefae586f634c54f86dc99e6a9", "b55b025e438fa8a98e32482b5f768ff5"];
-</script>
 <body onload="Onload()">
 
     <!-- <body> -->
@@ -61,9 +62,9 @@ zing-grid[loading]{height:450px;}</style>
 
                 <div id="visApp">
                     <div class="row">
-                        <div id="main0" style=" width:100%;height:400px;border-style: dashed;text-align:center">
+                        <div id="main0" style=" width:100%;height:400px;border-style: dashed;text-align:center;">
 
-                            <div id="pymaid" class="chart--container px-2" style="background:none;">
+                            <div id="pymaid" class="chart--container px-2">
                             </div>
 
 
