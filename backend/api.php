@@ -33,15 +33,15 @@ if (isset($_GET['func'])) {
         case 'GetFreqLastName':
             echo GetFreqLastName($_GET['table'], $_GET['orderby']);
             break;
-        case 'fuck1':
-            echo fuck1($_GET['table']);
+        case 'GetOverview':
+            echo GetOverview($_GET['table']);
             break;
     }
 }
 
 
 
-function fuck1($table)
+function GetOverview($table)
 {
     // number of people birth and death per year from 1801
     $birthArr = GetNrPerYear($table);

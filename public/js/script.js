@@ -1,13 +1,14 @@
 function Onload() {
     LoadLastNameArr();
-    shit('birth', chartBirth, '#E74C3C');
-    shit('death', chartDeath, '#566573');
-    shit('marriage', chartMarriage, '#BB8FCE');
+    ShowOverview('birth', chartBirth, '#E74C3C');
+    ShowOverview('death', chartDeath, '#566573');
+    ShowOverview('marriage', chartMarriage, '#BB8FCE');
     shit1()
 }
 
 var totalLastNameAsc = new Array();
 var top10LastName = new Array();
+var nameFreqDescJson;
 
 // input panel most frequent name and search function
 function LoadLastNameArr() {
@@ -22,7 +23,8 @@ function LoadLastNameArr() {
         crossDomain: true,
         type: 'get',
         success: function (data) {
-            var top10Submenu = document.getElementById('top10Submenu')
+            nameFreqDescJson=data;
+            let top10Submenu = document.getElementById('top10Submenu')
             let i, name, rank;
             let keys = Object.keys(data)
             let length = keys.length;
@@ -41,7 +43,6 @@ function LoadLastNameArr() {
             $('#popLname10').removeClass().addClass('fa fa-signal fa-flip-horizontal');
             $('#searchIcon').removeClass().addClass('fa fa-search');
             $('#inputLname').prop('disabled', false);
-            console.log(top10LastName);
         }
     });
 }
@@ -92,6 +93,8 @@ function testcheck(button) {
 function ClickCollapse() {
     setTimeout(function () {
         chartBirth.resize();
+        chartDeath.resize();
+        chartMarriage.resize();
     }, 600);
 }
 
@@ -102,28 +105,18 @@ function ConvertSingleQuote(str) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-function shit(table, chart, color) {
+// query table, load data to chart, 
+function ShowOverview(table, chart, color) {
     $.ajax({
         url: 'backend/api.php',
         data: {
-            func: 'fuck1',
+            func: 'GetOverview',
             table: table
         },
         dataType: "json",
         crossDomain: true,
         type: 'get',
         success: function (data) {
-            console.log(data);
             var optionBirth = chart.getOption();
             var legend1 = {
                 data: data.birthAndDeath.legend
