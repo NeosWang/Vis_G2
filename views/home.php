@@ -4,16 +4,10 @@ $title = 'Home';
 include $rootPath . '/views/tpl/header.php';
 ?>
 
-<style>html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-}
-
+<style>
 .chart--container {
   min-height: 150px;
-  width: 100%;
+  width: 50%;
   height: 100%;
 }
 
@@ -69,7 +63,7 @@ zing-grid[loading]{height:450px;}</style>
                     <div class="row">
                         <div id="main0" style=" width:100%;height:400px;border-style: dashed;text-align:center">
 
-                            <div id="myChart" class="chart--container">
+                            <div id="pymaid" class="chart--container px-2" style="background:none;">
                             </div>
 
 
