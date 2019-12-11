@@ -4,15 +4,15 @@
     </div>
     <ul class="list-unstyled components">
         <li>
-            <a href="#pageSubmenuRight" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">some crap</a>
+            <a href="#pageSubmenuRight" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">not decided yet</a>
             <ul class="collapse list-unstyled" id="pageSubmenuRight">
                 <li>
-                    <a href="#">some crap</a>
+                    <a href="#">no comment</a>
                 </li>
             </ul>
         </li>
         <li>
-            <a>more shit</a>
+            <a>so far, personal information could be retrieve at input panel by hover</a>
         </li>
     </ul>
     <ul class="list-unstyled CTAs">

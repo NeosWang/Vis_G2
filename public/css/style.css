@@ -81,7 +81,7 @@ a:focus {
 
 .panel ul.components {
     padding: 20px 0;
-    border-bottom: 1px solid #EC7063;
+    /* border-bottom: 1px solid #EC7063; */
 }
 
 .panel ul p {
@@ -100,7 +100,7 @@ a:focus {
     background: #fff;
 }
 
-.panel ul li a i:hover{
+.panel ul li a i:hover {
     color: #F1948A;
 }
 
@@ -163,8 +163,14 @@ a.article:hover {
 .fa-minus {
     color: #F1948A;
 }
-.fa { transform: scale(0.9,0.9); }
 
+.fa {
+    transform: scale(0.9, 0.9);
+}
+
+.fa-flip-horizontal {
+    transform: scaleX(-1);
+}
 
 
 
@@ -272,21 +278,171 @@ a.article:hover {
 
 
 .searchInput {
-    background:inherit;
+    background: inherit;
     border-bottom: 1px solid #ffffff;
     border-top: 0px;
     border-left: 0px;
     border-right: 0px;
     border-right: 0px;
-    width:80%;
+    width: 80%;
 }
 
 
-a .searchInput{
-    color:inherit;
+a .searchInput {
+    color: inherit;
 }
+
 a .searchInput:active,
-a .searchInput:hover{
+a .searchInput:hover {
     border-bottom: 1px solid #F1948A;
     color: inherit;
+}
+
+a .searchInput::placeholder {
+    /* Firefox, Chrome, Opera */
+    color: #F5B7B1;
+}
+
+a .searchInput::-ms-input-placeholder {
+    /* Edge */
+    color: #F5B7B1;
+}
+
+a .searchInput::-ms-clear {
+    /* Edge */
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+a .searchInput::-ms-reveal {
+    /* Edge */
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+
+
+
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+#personList {
+    width: 200px;
+    max-height: 350px;
+    /* overflow-y: scroll; */
+    border-top: 1px solid #EC7063;
+    border-bottom: 1px solid #EC7063;
+}
+
+#personList a{
+    background-color: #EC7063;
+}
+
+#personList a:hover{
+    background-color: #fff;
+}
+
+/* #personList a:hover{
+    color:black;
+} */
+
+.personListRes {
+    font-size: 0.7em;
+}
+
+
+
+
+
+/* population pymaid*/
+.pymaid-container {
+    min-height: 150px;
+    width: 50%;
+    height: 100%;
+}
+
+.zc-ref {
+    display: none;
+}
+
+div[id$="license"] {
+    display: none !important;
+}
+
+zing-grid[loading] {
+    height: 450px;
+}
+
+
+
+
+/* TimeNets tiptool */
+.d3-tip {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    line-height: 0.9;
+    padding: 2px;
+    background-color: antiquewhite;
+    color: #fff;
+    border-radius: 2px;
+    font-size: 0.7em;
+}
+
+.d3-tip:after {
+    box-sizing: border-box;
+    font-size: 0.7em;
+    width: 100%;
+    line-height: 1;
+    color: antiquewhite;
+    content: '\25BC';
+    position: absolute;
+    text-align: center;
+    top: 40px;
+    left: -1px;
+}
+
+.d3-tip.n:after {
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
 }

@@ -36,8 +36,46 @@ if (isset($_GET['func'])) {
         case 'GetOverview':
             echo GetOverview($_GET['table']);
             break;
+        case 'GetPersonByLastName':
+            echo GetPersonByLastName($_GET['table'],$_GET['lname']);
+        break;
     }
 }
+
+
+function GetPersonBirthToDeach($lname){
+    $birthPersonArr=GetPersonByLastName('birth',$lname);
+    $deathPersonArr=GetPersonByLastName('death',$lname);
+
+}
+
+
+
+function GetPersonByLastName($table, $lname)
+{
+    $sql = "SELECT rid, fname, pname, year, month, day, place, gender FROM $table WHERE fname<>'N.N.' AND lname='$lname';";
+    $conn = OpenConn();
+    $sqlRes = $conn->query($sql);
+    $outputArr = array();
+    if ($sqlRes->num_rows > 0) {
+        while ($row = $sqlRes->fetch_assoc()) {
+            $record = array('id' => $row['rid'],
+                            'fname' => $row['fname'],
+                            'pname' => $row['pname'],
+                            'lname'=>$lname,
+                            'year' => $row['year'],
+                            'month' => $row['month'],
+                            'day' => $row['day'],
+                            'place'=>$row['place'],
+                            'gender'=>$row['gender']);
+            array_push($outputArr,$record);
+        }
+    }
+    CloseConn($conn);
+    // $output=array($table=>$outputArr);
+    return json_encode ($outputArr);
+}
+
 
 
 
@@ -60,7 +98,7 @@ function GetOverview($table)
     $resDirthAndDeath = array('xAxis' => $xAxis, 'legend' => $legend, 'series' => array('data' => $birthSeries));
 
     $res = array('birthAndDeath' => $resDirthAndDeath);
-    echo json_encode($res);
+    return json_encode($res);
 }
 
 
@@ -99,7 +137,9 @@ function GetFreqLastName($table, $order)
     $outputArr = array();
     if ($sqlRes->num_rows > 0) {
         while ($row = $sqlRes->fetch_assoc()) {
-            $outputArr[$row['lname']] = $row['count'];
+            $record=array('name'=>$row['lname'],'value'=>$row['count']);
+            array_push($outputArr,$record);
+            // $outputArr[$row['lname']] = $row['count'];
         }
     }
     CloseConn($conn);
