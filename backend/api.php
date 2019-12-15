@@ -26,8 +26,6 @@ function CloseConn($conn){
 
 
 
-
-
 if (isset($_GET['func'])) {
     switch ($_GET['func']) {
         case 'GetFreqLastName':
@@ -41,14 +39,6 @@ if (isset($_GET['func'])) {
         break;
     }
 }
-
-
-function GetPersonBirthToDeach($lname){
-    $birthPersonArr=GetPersonByLastName('birth',$lname);
-    $deathPersonArr=GetPersonByLastName('death',$lname);
-
-}
-
 
 
 function GetPersonByLastName($table, $lname)
@@ -72,7 +62,6 @@ function GetPersonByLastName($table, $lname)
         }
     }
     CloseConn($conn);
-    // $output=array($table=>$outputArr);
     return json_encode ($outputArr);
 }
 
@@ -89,15 +78,11 @@ function GetOverview($table)
     // unify the interval as x-axis for both birth and death
     $xAxis = GetUnionXScale($sets);
 
-    $legend = array($table);
-
     // get the discrete series data under interval
-    $birthSeries = GetSeriesData($xAxis, $birthArr);
-    // $deathSeries = GetSeriesData($xAxis, $deathArr);
+    $Series = GetSeriesData($xAxis, $birthArr);
 
-    $resDirthAndDeath = array('xAxis' => $xAxis, 'legend' => $legend, 'series' => array('data' => $birthSeries));
+    $res = array('xAxis' => $xAxis, 'legend' => $table, 'series' => array('data' => $Series));
 
-    $res = array('birthAndDeath' => $resDirthAndDeath);
     return json_encode($res);
 }
 

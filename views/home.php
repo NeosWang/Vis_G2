@@ -174,28 +174,28 @@ include $rootPath . '/views/tpl/header.php';
 
 
 					<div class="row">
-						<div id="chartBirth" class="timeline" style=" width:100%;height:100px;">
+						<div id="chartBirth" class="timeline" style=" width:100%;height:200px;">
 						</div>
 					</div>
-					<div class="row">
+					<!-- <div class="row">
 
 						<div id="chartDeath" class="timeline" style=" width:100%;height:100px;">
 
 						</div>
-					</div>
+					</div> -->
 					<div class="row">
 						<div id="chartMarriage" class="timeline" style=" width:100%;height:100px;">
 						</div>
 					</div>
 					<script type="text/javascript">
 						var chartBirth = echarts.init(document.getElementById('chartBirth'));
-						var chartDeath = echarts.init(document.getElementById('chartDeath'));
+						// var chartDeath = echarts.init(document.getElementById('chartDeath'));
 						var chartMarriage = echarts.init(document.getElementById('chartMarriage'));
 						var chartWordCloud;
 						// var chartWordCloud = echarts.init(document.getElementById('chartWordCloud'));
 						window.onresize = function() {
 							chartBirth.resize();
-							chartDeath.resize();
+							// chartDeath.resize();
 							chartMarriage.resize();
 							chartWordCloud.resize();
 						}
@@ -208,6 +208,7 @@ include $rootPath . '/views/tpl/header.php';
 								type: 'category',
 								name: 'Year',
 								boundaryGap: false,
+								data:[]
 							},
 							yAxis: {
 								name: 'People',
@@ -219,10 +220,15 @@ include $rootPath . '/views/tpl/header.php';
 								top: 30,
 								right: 70,
 								bottom: 20
-							}
+							},
+							legend: {
+								data: [],
+								align: 'left'
+							},
+							series:[]
 						};
 						chartBirth.setOption(option);
-						chartDeath.setOption(option);
+						// chartDeath.setOption(option);
 						chartMarriage.setOption(option);
 					</script>
 

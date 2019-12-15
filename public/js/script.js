@@ -1,8 +1,8 @@
 function Onload() {
     LoadLastNameArr();
-    ShowOverview('birth_s', chartBirth, '#E74C3C');
-    ShowOverview('death', chartDeath, '#566573');
-    ShowOverview('marriage', chartMarriage, '#BB8FCE');
+    ShowOverview('birth_s', chartBirth, '#E74C3C','line');
+    ShowOverview('death', chartBirth, '#566573','line');
+    ShowOverview('marriage', chartMarriage, '#BB8FCE','bar');
     Pop_Pyramid();
 }
 
@@ -244,7 +244,7 @@ function ConvertSingleQuote(str) {
 
 
 // query table, load data to chart, 
-function ShowOverview(table, chart, color) {
+function ShowOverview(table, chart, color,type) {
     $.ajax({
         url: 'backend/api.php',
         data: {
@@ -256,30 +256,34 @@ function ShowOverview(table, chart, color) {
         type: 'get',
         success: function (data) {
             let op = chart.getOption();
-            let legend1 = {
-                data: data.birthAndDeath.legend
-            };
-            let xAxis1 = {
-                type: 'category',
-                boundaryGap: true,
-                data: data.birthAndDeath.xAxis
-            };
-            let series1 = {
-                name: table,
-                type: 'bar',
-                data: data.birthAndDeath.series.data,
-                itemStyle: {
-                    color: color
-                }
-            };
-            op.legend = legend1;
-            op.xAxis = xAxis1;
-            op.series = series1;
+            let legend=data.legend.split('_')[0];
+            op.legend[0].data.push(legend);
+            op.series.push({
+                    name: legend,
+                    type: type,
+                    data: data.series.data,
+                    itemStyle: {
+                        color: color
+                    },
+                    showSymbol: false
+                });
+   
+            op.xAxis[0].data=arrayUnique(op.xAxis[0].data.concat(data.xAxis));
             chart.setOption(op);
         }
     });
 }
 
+function arrayUnique(array) {
+    var a = array.concat();
+    for(var i=0; i<a.length; ++i) {
+        for(var j=i+1; j<a.length; ++j) {
+            if(a[i] === a[j])
+                a.splice(j--, 1);
+        }
+    }
+    return a;
+}
 
 function Pop_Pyramid() {
     $.ajax({
@@ -384,6 +388,9 @@ function LoadWordCloud(chartWordCloud,data) {
         }]
     };
     chartWordCloud.setOption(op);
+    chartWordCloud.on('click',function(param){
+        $('#inputLname').val(param.name);
+    });
 }
 
 
