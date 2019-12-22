@@ -1,10 +1,161 @@
 function Onload() {
     LoadLastNameArr();
-    ShowOverview('birth_s', chartBirth, '#E74C3C','line');
-    ShowOverview('death', chartBirth, '#566573','line');
-    ShowOverview('marriage', chartMarriage, '#BB8FCE','bar');
+    ShowOverview('birth_s', chartBirth, '#E74C3C', 'line');
+    ShowOverview('death', chartBirth, '#566573', 'line');
+    ShowOverview('marriage', chartMarriage, '#BB8FCE', 'bar');
     Pop_Pyramid();
+    ShowTree();
 }
+
+
+var treeData;
+
+function ShowTree() {
+    $.ajax({
+        url: 'backend/api.php',
+        data: {
+            func: 'test',
+            table: 'birth_s',
+            rid: '37c96bc1-d7dc-6ae3-a053-33a8b3e0cb8f'
+        },
+        dataType: "json",
+        crossDomain: true,
+        type: 'get',
+        success: function (data) {
+            treeData = data;
+            BulitRadialTree(treeData);
+        }
+    });
+}
+
+function BulitRadialTree(data) {
+    radialTree.clear();
+    radialTree.setOption(option = {
+        tooltip: {
+            trigger: 'item',
+            triggerOn: 'mousemove'
+        },
+        series: [{
+            type: 'tree',
+            top: '20%',
+            bottom: '20%',
+            right: '20%',
+            data : [data],
+            layout: 'radial',
+            label: {
+                normal: {
+                    fontSize: 9,
+                    formatter: function (param) {
+                        if (param.data.gender == 0) {
+                            return `{a|${param.data.fname} ${param.data.lname}}`;
+                        } else if (param.data.gender == 1) {
+                            return `{b|${param.data.fname} ${param.data.lname}}`;
+                        }
+                        return `${param.data.fname} ${param.data.lname}`;
+                    },
+                    rich: {
+                        a: {
+                            color: 'red'
+                        },
+                        b: {
+                            color: 'blue'
+                        }
+                    }
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                triggerOn: 'mousemove',
+                formatter: function (param) {
+                    return `${param.data.fname} ${param.data.pname} ${param.data.lname}<br>
+                            gender: ${param.data.gender==0?'female':param.data.gender==1?'male':'unknown'}<br>
+                            year: ${param.data.year}`;
+                }
+            },
+            symbol: 'emptyCircle',
+
+            symbolSize: 7,
+
+            initialTreeDepth: 3,
+
+            animationDurationUpdate: 750
+
+        }]
+    });
+}
+
+
+
+function BulitHorizontalTree(data) {
+    radialTree.clear();
+    radialTree.setOption(option = {
+        tooltip: {
+            trigger: 'item',
+            triggerOn: 'mousemove'
+        },
+        series: [{
+            type: 'tree',
+            top: '20%',
+            bottom: '20%',
+            right: '20%',
+            data : [data],
+            label: {
+                normal: {
+                    position: 'left',
+                    verticalAlign: 'middle',
+                    align: 'right',
+                    fontSize: 9,
+                    formatter: function (param) {
+                        if (param.data.gender == 0) {
+                            return `{a|${param.data.fname} ${param.data.lname}}`;
+                        } else if (param.data.gender == 1) {
+                            return `{b|${param.data.fname} ${param.data.lname}}`;
+                        }
+                        return `${param.data.fname} ${param.data.lname}`;
+                    },
+                    rich: {
+                        a: {
+                            color: 'red'
+                        },
+                        b: {
+                            color: 'blue'
+                        }
+                    }
+                }
+            },
+            leaves: {
+                label: {
+                    normal: {
+                        position: 'right',
+                        verticalAlign: 'middle',
+                        align: 'left'
+                    }
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                triggerOn: 'mousemove',
+                formatter: function (param) {
+                    return `${param.data.fname} ${param.data.pname} ${param.data.lname}<br>
+                            gender: ${param.data.gender==0?'female':param.data.gender==1?'male':'unknown'}<br>
+                            year: ${param.data.year}`;
+                }
+            },
+            symbol: 'emptyCircle',
+
+            symbolSize: 7,
+
+            initialTreeDepth: 3,
+
+            animationDurationUpdate: 750
+
+        }]
+    });
+}
+
+
+
+
 
 var totalLastNameAsc = new Array();
 var top10LastName = new Array();
@@ -33,9 +184,9 @@ function LoadLastNameArr() {
                 totalLastNameAsc.push(data[i]['name']);
             }
             totalLastNameAsc.sort();
-            
+
             chartWordCloud = echarts.init(document.getElementById('chartWordCloud'));
-            LoadWordCloud(chartWordCloud,topLnamesforCloud);
+            LoadWordCloud(chartWordCloud, topLnamesforCloud);
             $('#popLname10').removeClass().addClass('fa fa-flip-horizontal fa-signal')
                 .attr('onClick', 'ShowTop10LastName();')
                 .attr('data-toggle', 'tooltip')
@@ -229,7 +380,7 @@ function SelectLastName(html) {
 function ClickCollapse() {
     setTimeout(function () {
         chartBirth.resize();
-        chartDeath.resize();
+        chartWordCloud.resize();
         chartMarriage.resize();
     }, 600);
 }
@@ -244,7 +395,7 @@ function ConvertSingleQuote(str) {
 
 
 // query table, load data to chart, 
-function ShowOverview(table, chart, color,type) {
+function ShowOverview(table, chart, color, type) {
     $.ajax({
         url: 'backend/api.php',
         data: {
@@ -256,19 +407,19 @@ function ShowOverview(table, chart, color,type) {
         type: 'get',
         success: function (data) {
             let op = chart.getOption();
-            let legend=data.legend.split('_')[0];
+            let legend = data.legend.split('_')[0];
             op.legend[0].data.push(legend);
             op.series.push({
-                    name: legend,
-                    type: type,
-                    data: data.series.data,
-                    itemStyle: {
-                        color: color
-                    },
-                    showSymbol: false
-                });
-   
-            op.xAxis[0].data=arrayUnique(op.xAxis[0].data.concat(data.xAxis));
+                name: legend,
+                type: type,
+                data: data.series.data,
+                itemStyle: {
+                    color: color
+                },
+                showSymbol: false
+            });
+
+            op.xAxis[0].data = arrayUnique(op.xAxis[0].data.concat(data.xAxis));
             chart.setOption(op);
         }
     });
@@ -276,9 +427,9 @@ function ShowOverview(table, chart, color,type) {
 
 function arrayUnique(array) {
     var a = array.concat();
-    for(var i=0; i<a.length; ++i) {
-        for(var j=i+1; j<a.length; ++j) {
-            if(a[i] === a[j])
+    for (var i = 0; i < a.length; ++i) {
+        for (var j = i + 1; j < a.length; ++j) {
+            if (a[i] === a[j])
                 a.splice(j--, 1);
         }
     }
@@ -353,9 +504,9 @@ function Pop_Pyramid() {
     });
 }
 
-function LoadWordCloud(chartWordCloud,data) {
+function LoadWordCloud(chartWordCloud, data) {
     let maskImage = new Image();
-    maskImage.src= "data:image/png;base64,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";
+    maskImage.src = "data:image/png;base64,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";
 
     let op = {
         tooltip: {},
@@ -388,7 +539,7 @@ function LoadWordCloud(chartWordCloud,data) {
         }]
     };
     chartWordCloud.setOption(op);
-    chartWordCloud.on('click',function(param){
+    chartWordCloud.on('click', function (param) {
         $('#inputLname').val(param.name);
     });
 }
@@ -397,6 +548,3 @@ function LoadWordCloud(chartWordCloud,data) {
 function RandomTransparency(min, max) {
     return Math.round((Math.random() * (max - min) + min) * 100) / 100;
 }
-
-
-

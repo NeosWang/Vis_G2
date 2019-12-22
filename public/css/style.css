@@ -395,8 +395,8 @@ a .searchInput::-ms-reveal {
 
 /* population pymaid*/
 .pymaid-container {
-    min-height: 150px;
-    width: 50%;
+    min-height: 150px; 
+     width: 50%;
     height: 100%;
 }
 
@@ -409,7 +409,7 @@ div[id$="license"] {
 }
 
 zing-grid[loading] {
-    height: 450px;
+    height: 400px;
 }
 
 

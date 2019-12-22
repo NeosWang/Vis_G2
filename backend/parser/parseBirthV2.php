@@ -9,7 +9,6 @@ include $rootPath . '/vendor/autoload.php';
 
 $time_start = microtime(true);
 $path = $rootPath . "/data/xml/bhic_a2a_bs_g-201911.xml";
-// $path = $rootPath . "/data/xml/testing_birth.xml";
 
 ParseBirth($path);
 $time_end = microtime(true);
