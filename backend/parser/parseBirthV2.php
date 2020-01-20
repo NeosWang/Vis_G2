@@ -6,6 +6,9 @@ include $rootPath . '/backend/conn.php';
 include  $rootPath . '/backend/parseTool.php';
 // import genderDetecotr
 include $rootPath . '/vendor/autoload.php';
+// initialize redis clinet
+require $rootPath . "/lib/predis/autoload.php";
+
 
 $time_start = microtime(true);
 $path = $rootPath . "/data/xml/bhic_a2a_bs_g-201911.xml";

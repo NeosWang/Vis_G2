@@ -1,11 +1,11 @@
 <?php
 $rootPath = $_SERVER['DOCUMENT_ROOT'];
 // import mysql connection
-include $rootPath . '/backend/conn.php';
+include $rootPath . '/backend/api.php';
 // support function
 include  $rootPath . '/backend/parseTool.php';
-// import genderDetecotr
-include $rootPath . '/vendor/autoload.php';
+// initialize redis clinet
+require $rootPath . "/lib/predis/autoload.php";
 
 $time_start = microtime(true);
 $path = $rootPath . "/data/xml/bhic_a2a_bs_h-201911.xml";
@@ -20,6 +20,7 @@ print_r('<br>' . date("i:s.u", $time_end - $time_start) . '<br>');
 function ParseMarriage($path)
 {
     $count = 0;
+    $arrNameGender = array();
 
     $xml = new XMLReader();
     $xml->open($path, 'UTF-8');
@@ -27,7 +28,7 @@ function ParseMarriage($path)
 
     $sqlMarriage = InitSqlMarriage();
 
-    $detector = new GenderDetector\GenderDetector();
+    $redis =  new Predis\Client();
 
     while ($xml->read()) {
 
@@ -37,7 +38,7 @@ function ParseMarriage($path)
             $xmlStr = preg_replace('~(</?|\s)(a2a):~is', '$1', $xml->readOuterXML());
             $node = simplexml_load_string($xmlStr);
 
-            ParseMarriageRecord($node, $sqlMarriage, $detector);
+            ParseMarriageRecord($node, $sqlMarriage, $arrNameGender);
 
             if ($count % 50000 == 0) {
                 $sqlMarriage = substr($sqlMarriage, 0, strlen($sqlMarriage) - 1);
@@ -61,9 +62,12 @@ function ParseMarriage($path)
             echo "<br>" . $conn->error;
         }
     }
+    
     end: $xml->close();
     CloseConn($conn);
-    print_r($count);
+    UpdateRedis($arrNameGender,$redis);
+   
+    // print_r($count);
 }
 
 
@@ -72,7 +76,7 @@ function InitSqlMarriage()
     return "insert into marriage (pid, fname, pname, lname, relation, rid, place, year, month, day, gender, eyear, emonth, eday) values";
 }
 
-function ParseMarriageRecord($node, &$sqlMarriage, $detector)
+function ParseMarriageRecord($node, &$sqlMarriage, &$arrNameGender)
 {
     $rid = $node->header->identifier;
 
@@ -114,7 +118,7 @@ function ParseMarriageRecord($node, &$sqlMarriage, $detector)
         } elseif ($child->getName() == 'RelationEP') {
             $pid = str_replace('Person:', '', $child->PersonKeyRef);
             $relation = GetRelationInt($child->RelationType);
-            
+
             $family[$pid]['relation'] = $relation;
         } elseif ($child->getName() == 'Event') {
             $eyear = isset($child->EventDate->Year) ?
@@ -129,7 +133,7 @@ function ParseMarriageRecord($node, &$sqlMarriage, $detector)
     }
 
     foreach ($family as $key => $value) {
-        $gender=$value['gender']==0?$value['relation']%2 : $value['gender'];
+        $gender = $value['gender'] == 0 ? $value['relation'] % 2 : $value['gender'];
         $sqlMarriage .= "('$key',
                     '{$value['fname']}',
                     '{$value['pname']}',
@@ -144,6 +148,7 @@ function ParseMarriageRecord($node, &$sqlMarriage, $detector)
                     '$eyear',
                     '$emonth',
                     '$eday'),";
+        UpdateNameGenderDict($arrNameGender, $value['fname'], $gender);
     }
 }
 
@@ -164,11 +169,28 @@ function GetRelationInt($relation)
             break;
         case 'Moeder van de bruidegom':
             return 4;
-            break;     
+            break;
         case 'Moeder van de bruid':
             return 6;
             break;
         default:
             return 0;
+    }
+}
+
+function UpdateNameGenderDict(&$dict, $fname, $gender)
+{
+    $g = ($gender == 1 ? 1 : -1);
+    if (array_key_exists($fname, $dict)) {
+        $dict[$fname] += $g;
+    } else {
+        $dict[$fname] = $g;
+    }
+}
+
+function UpdateRedis(&$dict, $redis)
+{
+    foreach($dict as $key =>$value){
+        $redis ->set($key,($value>0?1:0));
     }
 }

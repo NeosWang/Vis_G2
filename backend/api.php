@@ -31,7 +31,7 @@ function CloseConn($conn)
 if (isset($_GET['func'])) {
     switch ($_GET['func']) {
         case 'GetFreqLastName':
-            echo GetFreqLastName($_GET['table'], $_GET['orderby']);
+            echo GetFreqLastName($_GET['table'], $_GET['orderby'], $_GET['lmt']);
             break;
         case 'GetOverview':
             echo GetOverview($_GET['table']);
@@ -121,9 +121,12 @@ function GetNrPerYear($table)
 
 
 
-function GetFreqLastName($table, $order)
+function GetFreqLastName($table, $order, $lmt)
 {
-    $sql = "SELECT lname, count(*) AS count FROM $table WHERE lname<>'N.N.' and lname<>'' and lname<>'####' GROUP BY lname ORDER BY count $order;";
+    // $sql = "SELECT lname, count(*) AS count FROM $table WHERE lname<>'N.N.' and lname<>'' and lname<>'####' GROUP BY lname ORDER BY count $order;";
+
+    $sql = "SELECT lname, count(*) AS count FROM (SELECT * FROM $table WHERE lname<>'N.N.' and lname<>'' and lname<>'####' LIMIT $lmt) AS subtable GROUP BY lname ORDER BY count $order;";
+
     $conn = OpenConn();
     $sqlRes = $conn->query($sql);
     $outputArr = array();

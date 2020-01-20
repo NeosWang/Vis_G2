@@ -32,19 +32,35 @@ include $rootPath . '/views/tpl/header.php';
 				<div id="visApp">
 					<div class="row" style="height:400px;">
 						<!-- <div id="main0" style=" width:100%;height:400px;text-align:center;"> -->
+
 						<div id="chartWordCloud" class="col pl-3"></div>
+
 
 						<div id="pymaid" class="col pymaid-container" style="padding-right: 20px"></div>
 						<!-- </div> -->
 					</div>
+					<div>
+						<button style="width:60px;height:40px" onclick="SwitchLayout(1)">
+							<img src="./public/images/map.jpg" style="width:100%;height:100%">
+						</button>
+						<button style="width:60px;height:40px" onclick="SwitchLayout(2)">
+							<img src="./public/images/house.jpg" style="width:100%;height:100%">
+						</button>
+						<button style="width:60px;height:40px" onclick="SwitchRandomColor()">
+							<img src="./public/images/color.jpg" style="width:100%;height:100%">
+						</button>
+					</div>
 
 
 					<div id="timenets-container" style=" width:100%; height:300px;text-align:center;">
-						<script src="public/js/timeNets.js"></script>
+						<script src="public/js/charts/timeNets.js"></script>
 					</div>
 
-					<div class="row" style="height:600px;">
-						<div class="col-1 pl-5 pt-5"><button onclick=" SwitchTree(this)" value='0'>switch</button></div>
+					<div class="row" style="height:1000px;">
+						<div class="col-1 pl-5 pt-5">
+							<button onclick=" SwitchTree(this)" value='0'>switch</button>
+							<button onclick=" ChangeSymbol()" value='0'>encode</button>
+						</div>
 						<script>
 							function SwitchTree(button) {
 								if ($(button).val() == '0') {
@@ -62,19 +78,19 @@ include $rootPath . '/views/tpl/header.php';
 
 
 					<div class="row">
-						<div id="chartBirth" class="timeline" style=" width:100%;height:200px;">
+						<div id="chartBirth" class="timeline" style=" width:100%;height:350px;">
 						</div>
 					</div>
 
 					<div class="row mb-5">
-						<div id="chartMarriage" class="timeline" style=" width:100%;height:100px;">
+						<div id="chartMarriage" class="timeline" style=" width:100%;height:200px;">
 						</div>
 					</div>
 					<script type="text/javascript">
 						var chartBirth = echarts.init(document.getElementById('chartBirth'));
 						var chartMarriage = echarts.init(document.getElementById('chartMarriage'));
 						var radialTree = echarts.init(document.getElementById('radialTree'));
-						var chartWordCloud;
+						var chartWordCloud = echarts.init(document.getElementById('chartWordCloud'));
 						window.onresize = function() {
 							chartBirth.resize();
 							chartMarriage.resize();
@@ -84,8 +100,35 @@ include $rootPath . '/views/tpl/header.php';
 
 						var option = {
 							tooltip: {
-								trigger: 'axis'
+								trigger: 'axis',
+								axisPointer: {
+									type: 'shadow',
+									label: {
+										show: true
+									}
+								}
 							},
+							toolbox: {
+								show: true,
+								feature: {
+									saveAsImage: { //保存图片
+										show: true
+									},
+									mark: {
+										show: true
+									},
+									magicType: {
+										show: true,
+										type: ['line', 'bar']
+									},
+									restore: {
+										show: true
+									}
+								},
+								right: 30
+
+							},
+							// calculable: true,
 							xAxis: {
 								type: 'category',
 								name: 'Year',
@@ -98,10 +141,11 @@ include $rootPath . '/views/tpl/header.php';
 								interval: 6000
 							},
 							grid: {
-								left: 70,
-								top: 30,
-								right: 70,
-								bottom: 20
+								left: 50,
+								top: 50,
+								right: 140,
+								// bottom: 20
+								containLabel: true
 							},
 							legend: {
 								data: [],
