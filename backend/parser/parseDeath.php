@@ -1,11 +1,13 @@
 <?php
 $rootPath = $_SERVER['DOCUMENT_ROOT'];
 // import mysql connection
-include $rootPath . '/backend/conn.php';
+include $rootPath . '/backend/api.php';
 // support function
 include  $rootPath . '/backend/parseTool.php';
 // import genderDetecotr
 include $rootPath . '/vendor/autoload.php';
+// initialize redis clinet
+require $rootPath . "/lib/predis/autoload.php";
 
 $time_start = microtime(true);
 $path = $rootPath . "/data/xml/bhic_a2a_bs_o-201911.xml";
@@ -29,6 +31,8 @@ function ParseDeath($path)
 
     $detector = new GenderDetector\GenderDetector();
 
+    $redis =  new Predis\Client();
+
     while ($xml->read()) {
 
         while ($xml->nodeType == XMLReader::ELEMENT && $xml->name == 'record') {
@@ -37,7 +41,7 @@ function ParseDeath($path)
             $xmlStr = preg_replace('~(</?|\s)(a2a):~is', '$1', $xml->readOuterXML());
             $node = simplexml_load_string($xmlStr);
 
-            ParseDeathRecord($node, $sqlDeath, $detector);
+            ParseDeathRecord($node, $sqlDeath, $detector,$redis);
 
             if ($count % 50000 == 0) {
                 $sqlDeath = substr($sqlDeath, 0, strlen($sqlDeath) - 1);
@@ -54,7 +58,7 @@ function ParseDeath($path)
         }
     }
     if ($sqlDeath != InitSqlDeath()) {
-        $sqlBirth = substr($sqlDeath, 0, strlen($sqlDeath) - 1);
+        $sqlDeath = substr($sqlDeath, 0, strlen($sqlDeath) - 1);
         if ($conn->query(($sqlDeath))) {
             echo 'geboorte Table Done';
         } else {
@@ -72,7 +76,7 @@ function InitSqlDeath()
     return "insert into death (pid, fname, pname, lname, place, year, month, day, gender) values";
 }
 
-function ParseDeathRecord($node, &$sqlDeath, $detector)
+function ParseDeathRecord($node, &$sqlDeath, $detector,$redis)
 {
     $pid = '';
     $fname = '';
@@ -109,7 +113,7 @@ function ParseDeathRecord($node, &$sqlDeath, $detector)
             $gender=$person['gender'];
         }
     }
-    $gender=GetPredictedGenderInt($detector,$fname,$gender);
+    $gender=GetPredictedGenderInt($detector,$fname,$gender,$redis);
     $sqlDeath .= "('$pid',
                 '$fname',
                 '$pname',

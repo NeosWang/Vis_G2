@@ -1,7 +1,7 @@
 <?php
 $rootPath = $_SERVER['DOCUMENT_ROOT'];
 // import mysql connection
-include $rootPath . '/backend/conn.php';
+include $rootPath . '/backend/api.php';
 // support function
 include  $rootPath . '/backend/parseTool.php';
 // import genderDetecotr
@@ -32,6 +32,8 @@ function ParseBirth($path)
 
     $detector = new GenderDetector\GenderDetector();
 
+    $redis =  new Predis\Client();
+
     while ($xml->read()) {
 
         while ($xml->nodeType == XMLReader::ELEMENT && $xml->name == 'record') {
@@ -40,7 +42,7 @@ function ParseBirth($path)
             $xmlStr = preg_replace('~(</?|\s)(a2a):~is', '$1', $xml->readOuterXML());
             $node = simplexml_load_string($xmlStr);
 
-            ParseBirthRecord($node, $sqlBirthS, $sqlBirthR, $detector);
+            ParseBirthRecord($node, $sqlBirthS, $sqlBirthR, $detector,$redis);
 
             if ($count % 50000 == 0) {
                BulkInsert($sqlBirthS,InitSqlBirthSelf(),$conn);
@@ -86,7 +88,7 @@ function BulkInsert(&$sqlStr,$initSqlStr,$conn){
 }
 
 
-function ParseBirthRecord($node, &$sqlBirthS, &$sqlBirthR, $detector)
+function ParseBirthRecord($node, &$sqlBirthS, &$sqlBirthR, $detector, $redis)
 {
     $family = array();
     $place = '';
@@ -108,7 +110,7 @@ function ParseBirthRecord($node, &$sqlBirthS, &$sqlBirthR, $detector)
                 addslashes($child->PersonName->PersonNamePrefixLastName) : '';
             $lname = isset($child->PersonName->PersonNameLastName) ?
                 addslashes($child->PersonName->PersonNameLastName) : '';
-            $gender = GetPredictedGenderInt($detector, $fname, $child->Gender);
+            $gender = GetPredictedGenderInt($detector, $fname, $child->Gender, $redis);
             $family[$pid] = array(
                 'fname' => $fname,
                 'pname' => $pname,

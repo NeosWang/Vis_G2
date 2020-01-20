@@ -8,12 +8,17 @@ function GetTrimPid($pid)
     return  str_replace($trimFoot, '',  str_replace($trimHead, '', $pid));
 }
 
-function GetPredictedGenderInt($detector, $fname, $gender)
+function GetPredictedGenderInt($detector, $fname, $gender, $redis)
 {
     if ($gender == 'Onbekend') {
-        $predict = $detector->detect(explode(' ', $fname)[0], GenderDetector\Country::THE_NETHERLANDS);
-        unset($detector);
-        return GetGenderInt($predict);
+        if($redis->exists($fname)){
+            return $redis->get($fname);
+        }else{
+            $predict = $detector->detect(explode(' ', $fname)[0], GenderDetector\Country::THE_NETHERLANDS);
+            unset($detector);
+            return GetGenderInt($predict);
+        }
+        
     }
     return GetGenderInt($gender);
 }
