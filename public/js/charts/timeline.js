@@ -38,9 +38,6 @@ function ShowOverview(table, chart, color, type) {
             ]
             op.dataZoom=dataZoom;
             op.xAxis[0].data = arrayUnique(op.xAxis[0].data.concat(data.xAxis));
-
-
-
             chart.setOption(op);
         }
     });

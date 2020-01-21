@@ -100,8 +100,8 @@ function GetNrPerYear($table)
 {
     $sql = "SELECT year, count(*) AS count FROM $table WHERE year>1800 GROUP BY year HAVING count(*)>10 ORDER BY year;";
 
-    if ($table == 'marriage') {
-        $sql = "SELECT eyear AS year, count(*) AS count FROM `marriage` WHERE relation=1 and eyear>0 GROUP BY eyear HAVING count(*)>10 ORDER BY eyear;";
+    if ($table == 'marriage_s') {
+        $sql = "SELECT eyear AS year, count(*) AS count FROM $table WHERE relation=1 GROUP BY eyear HAVING count(*)>10 ORDER BY eyear;";
     }
 
     $conn = OpenConn();

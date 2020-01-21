@@ -29,9 +29,7 @@ function ParseBirth($path)
 
     $sqlBirthS = InitSqlBirthSelf();
     $sqlBirthR = InitSqlBirthRelation();
-
     $detector = new GenderDetector\GenderDetector();
-
     $redis =  new Predis\Client();
 
     while ($xml->read()) {

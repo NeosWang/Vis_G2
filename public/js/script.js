@@ -4,15 +4,13 @@ document.write(`<script src='public/js/charts/wordCloud.js' type='text/javascrip
                 <script src='public/js/charts/popPyramid.js' type='text/javascript'></script>`)
 
 function Onload() {
-    LoadLastNameArr(50000);
-
-    
+    // LoadLastNameArr(5000);   
     // LoadLastNameArr();
-    ShowOverview('birth_s', chartBirth, '#E74C3C', 'line');
-    ShowOverview('death', chartBirth, '#566573', 'line');
-    ShowOverview('marriage', chartMarriage, '#BB8FCE', 'line');
-    Pop_Pyramid();
-    ShowTree();
+    // ShowOverview('birth_s', chartBirth, '#E74C3C', 'line');
+    // ShowOverview('death', chartBirth, '#566573', 'line');
+    // ShowOverview('marriage_s', chartMarriage, '#BB8FCE', 'line');
+    // Pop_Pyramid();
+    // ShowTree();
 }
 
 
@@ -47,7 +45,6 @@ var monthArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 
 // input panel most frequent name and search function
 function LoadLastNameArr(size) {
-    var beginTime = performance.now();
     $.ajax({
         url: 'backend/api.php',
         data: {
@@ -58,7 +55,6 @@ function LoadLastNameArr(size) {
         },
         dataType: "json",
         crossDomain: true,
-        async: false,
         type: 'get',
         success: function (data) {
            
@@ -82,11 +78,6 @@ function LoadLastNameArr(size) {
                 .attr('title', 'Popular Last Name');
             $('#inputLname').prop('disabled', false);
             $('#btnLname').prop('disabled', false).html('Search');
-
-            
-            var endTime = performance.now();
-            console.log('size: '+size+'; time: '+(endTime-beginTime));
-
         }
     });
 }

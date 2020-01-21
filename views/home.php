@@ -21,13 +21,45 @@ include $rootPath . '/views/tpl/header.php';
 			<!-- Main Content: Start -->
 			<div id="contentLeft">
 
-				<div class="container-fluid">
+				<!-- <div class="container-fluid">
 					<button type="button" id="sidebarLeftCollapse" onclick="ClickCollapse()" class="navbar-btn">
 						<span></span>
 						<span></span>
 						<span></span>
 					</button>
-				</div>
+				</div> -->
+
+
+
+
+				<nav class="navbar navbar-expand-lg navbar-light bg-light">
+					<button type="button" id="sidebarLeftCollapse" onclick="ClickCollapse()" class="navbar-btn">
+						<span></span>
+						<span></span>
+						<span></span>
+					</button>
+					<div>
+					<div class="collapse navbar-collapse" id="navbarNav">
+					<button type="button" class="btn btn-outline-primary">Primary</button>
+<button type="button" class="btn btn-outline-secondary">Secondary</button>
+<button type="button" class="btn btn-outline-success">Success</button>
+<button type="button" class="btn btn-outline-danger">Danger</button>
+<button type="button" class="btn btn-outline-warning">Warning</button>
+<button type="button" class="btn btn-outline-info">Info</button>
+<button type="button" class="btn btn-outline-dark">Dark</button>						
+					</div>
+					</div>
+				</nav>
+
+
+
+
+
+
+
+
+
+
 
 				<div id="visApp">
 					<div class="row" style="height:400px;">
