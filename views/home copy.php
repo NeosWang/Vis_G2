@@ -20,27 +20,38 @@ include $rootPath . '/views/tpl/header.php';
 
 			<!-- Main Content: Start -->
 			<div id="contentLeft">
-				<div class="container-fluid">
-					<nav class="navbar navbar-expand-lg navbar-light bg-light">
-						<button type="button" id="sidebarLeftCollapse" onclick="ClickCollapse()" class="navbar-btn">
-							<span></span>
-							<span></span>
-							<span></span>
-						</button>
-						<div>
-							<div>
-								<button type="button" class="btn btn-outline-primary" onclick="loadViewTimeline()"><i class="fa fa-bar-chart fa-lg"></i></button>
-								<button type="button" class="btn btn-outline-info" onclick="loadViewWordCloud()"><i class="fa fa-cloud fa-lg"></i></button>
-							</div>
+
+				<!-- <div class="container-fluid">
+					<button type="button" id="sidebarLeftCollapse" onclick="ClickCollapse()" class="navbar-btn">
+						<span></span>
+						<span></span>
+						<span></span>
+					</button>
+				</div> -->
+
+
+
+
+				<nav class="navbar navbar-expand-lg navbar-light bg-light">
+					<button type="button" id="sidebarLeftCollapse" onclick="ClickCollapse()" class="navbar-btn">
+						<span></span>
+						<span></span>
+						<span></span>
+					</button>
+					<div>
+						<div class="collapse navbar-collapse" id="navbarNav">
+							<button type="button" class="btn btn-outline-primary" onclick="loadViewTimeline()">111</button>
+							<button type="button" class="btn btn-outline-secondary">Secondary</button>
+							<button type="button" class="btn btn-outline-success">Success</button>
+							<button type="button" class="btn btn-outline-danger">Danger</button>
+							<button type="button" class="btn btn-outline-warning">Warning</button>
+							<button type="button" class="btn btn-outline-info">Info</button>
+							<button type="button" class="btn btn-outline-dark">Dark</button>
 						</div>
-					</nav>
-				</div>
-
-
-
-				<div class="row">
-					<div id="mainViz" class="pr-5" style='width:100%;height:100%'>
 					</div>
+				</nav>
+
+				<div id='mainViz'>
 				</div>
 
 
@@ -109,15 +120,74 @@ include $rootPath . '/views/tpl/header.php';
 						</div>
 					</div>
 					<script type="text/javascript">
+						var chartBirth = echarts.init(document.getElementById('chartBirth'));
+						var chartMarriage = echarts.init(document.getElementById('chartMarriage'));
 						var radialTree = echarts.init(document.getElementById('radialTree'));
 						var chartWordCloud = echarts.init(document.getElementById('chartWordCloud'));
 						window.onresize = function() {
-							setTimeout(() => {
-								chartArr.forEach(v => {
-									v.resize()
-								});
-							}, 600);
+							chartBirth.resize();
+							chartMarriage.resize();
+							chartWordCloud.resize();
+							radialTree.resize();
 						}
+
+						var option = {
+							tooltip: {
+								trigger: 'axis',
+								axisPointer: {
+									type: 'shadow',
+									label: {
+										show: true
+									}
+								}
+							},
+							toolbox: {
+								show: true,
+								feature: {
+									saveAsImage: { //保存图片
+										show: true
+									},
+									mark: {
+										show: true
+									},
+									magicType: {
+										show: true,
+										type: ['line', 'bar']
+									},
+									restore: {
+										show: true
+									}
+								},
+								right: 30
+
+							},
+							// calculable: true,
+							xAxis: {
+								type: 'category',
+								name: 'Year',
+								boundaryGap: false,
+								data: []
+							},
+							yAxis: {
+								name: 'People',
+								type: 'value',
+								interval: 6000
+							},
+							grid: {
+								left: 50,
+								top: 50,
+								right: 140,
+								// bottom: 20
+								containLabel: true
+							},
+							legend: {
+								data: [],
+								align: 'left'
+							},
+							series: []
+						};
+						chartBirth.setOption(option);
+						chartMarriage.setOption(option);
 					</script>
 				</div>
 

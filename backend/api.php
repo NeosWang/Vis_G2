@@ -31,13 +31,16 @@ function CloseConn($conn)
 if (isset($_GET['func'])) {
     switch ($_GET['func']) {
         case 'GetFreqLastName':
-            echo GetFreqLastName($_GET['table'], $_GET['orderby'], $_GET['lmt']);
+            echo GetFreqLastName($_GET['table'], $_GET['orderby']);
             break;
         case 'GetOverview':
             echo GetOverview($_GET['table']);
             break;
         case 'GetPersonByLastName':
             echo GetPersonByLastName($_GET['table'], $_GET['lname']);
+            break;
+        case 'GetFreqPerDay':
+            echo GetFreqPerDay($_GET['table'],$_GET['year']);
             break;
         case 'test':
             echo GetFamilyTree($_GET['rid']);
@@ -121,11 +124,9 @@ function GetNrPerYear($table)
 
 
 
-function GetFreqLastName($table, $order, $lmt)
+function GetFreqLastName($table, $order)
 {
-    // $sql = "SELECT lname, count(*) AS count FROM $table WHERE lname<>'N.N.' and lname<>'' and lname<>'####' GROUP BY lname ORDER BY count $order;";
-
-    $sql = "SELECT lname, count(*) AS count FROM (SELECT * FROM $table WHERE lname<>'N.N.' and lname<>'' and lname<>'####' LIMIT $lmt) AS subtable GROUP BY lname ORDER BY count $order;";
+    $sql = "SELECT lname, count(*) AS count FROM $table WHERE lname<>'N.N.' and lname<>'' and lname<>'####' GROUP BY lname ORDER BY count $order;";
 
     $conn = OpenConn();
     $sqlRes = $conn->query($sql);
@@ -279,3 +280,42 @@ function or_test1($fname, $pname, $lname, $parentYear,$parentPlace,&$dict){
      }
     return $res;
 }
+
+
+
+function GetDateDictOfYear($year)
+{
+    $range = array();
+    $start = new DateTime($year . '-01-01');
+    $end = new DateTime($year . '-12-31');
+    do {
+        $range[$start->format('Y-m-d')] = 0;
+        $start->add(new DateInterval('P1D'));
+    } while ($start <= $end);
+
+    return $range;
+}
+
+function GetFreqPerDay($table,$year){
+    $outputArr=GetDateDictOfYear($year);
+    $sql = "SELECT count(*) AS count, month, day FROM $table WHERE year='$year' GROUP BY month, day;";
+    $conn = OpenConn();
+    $sqlRes = $conn->query($sql);
+    if ($sqlRes->num_rows > 0) {
+        while ($row = $sqlRes->fetch_assoc()) {
+            $date = new DateTime($year. '-' . $row['month'] . '-' . $row['day']);
+            $outputArr[$date->format('Y-m-d')] = $row['count'];
+        }     
+    }
+    CloseConn($conn);
+    return json_encode($outputArr);
+}
+
+
+
+
+
+
+
+
+

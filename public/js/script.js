@@ -1,16 +1,17 @@
 document.write(`<script src='public/js/charts/wordCloud.js' type='text/javascript'></script>
                 <script src='public/js/charts/timeline.js' type='text/javascript'></script>
                 <script src='public/js/charts/tree.js' type='text/javascript'></script>
+                <script src='public/js/charts/calendar.js' type='text/javascript'></script>
                 <script src='public/js/charts/popPyramid.js' type='text/javascript'></script>`)
 
 function Onload() {
-    // LoadLastNameArr(5000);   
-    // LoadLastNameArr();
-    // ShowOverview('birth_s', chartBirth, '#E74C3C', 'line');
-    // ShowOverview('death', chartBirth, '#566573', 'line');
-    // ShowOverview('marriage_s', chartMarriage, '#BB8FCE', 'line');
-    // Pop_Pyramid();
-    // ShowTree();
+    GetOverViewData('birth_s');
+    GetOverViewData('death');
+    GetOverViewData('marriage_s');
+    LoadLastNameArr();
+    Pop_Pyramid();
+    // ShowTree('4b71b3b8-cd51-fad0-282a-570f0a5c2eb9');
+    ShowTree('27adf2b9-38f5-160c-c774-61d668c94ac2');
 }
 
 
@@ -18,13 +19,13 @@ function Onload() {
 
 var treeData;
 
-function ShowTree() {
+function ShowTree(rid) {
     $.ajax({
         url: 'backend/api.php',
         data: {
             func: 'test',
             table: 'birth_s',
-            rid: '4b71b3b8-cd51-fad0-282a-570f0a5c2eb9'
+            rid: rid
             // rid: '37c96bc1-d7dc-6ae3-a053-33a8b3e0cb8f'
         },
         dataType: "json",
@@ -44,13 +45,12 @@ var nameFreqDescJson;
 var monthArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 // input panel most frequent name and search function
-function LoadLastNameArr(size) {
+function LoadLastNameArr() {
     $.ajax({
         url: 'backend/api.php',
         data: {
             func: 'GetFreqLastName',
             table: 'birth',
-            lmt:size,
             orderby: 'desc'
         },
         dataType: "json",
@@ -58,8 +58,8 @@ function LoadLastNameArr(size) {
         type: 'get',
         success: function (data) {
            
-            // let topLnamesforCloud = data.slice(0, 200);
-            let topLnamesforCloud = data;
+            let topLnamesforCloud = data.slice(0, 200);
+            // let topLnamesforCloud = data;
             nameFreqDescJson = data;
             for (i = 0; i < data.length; i++) {
                 if (i < 10) {
@@ -261,12 +261,32 @@ function SelectLastName(html) {
 
 // resize images of main panel while click collapse
 function ClickCollapse() {
-    setTimeout(function () {
-        chartBirth.resize();
-        chartWordCloud.resize();
-        chartMarriage.resize();
+    setTimeout(() => {
+        chartArr.forEach(v => {
+            v.resize()
+        });
     }, 600);
 }
 
+var chartArr=[];
+
+function loadViewTimeline(){
+    $("#mainViz").html("");
+
+    ovCalendarChart=CreateCalendar('calendarYear', 'calendar', '100%', '380px', 'mainViz')
+    ShowCalendar('birth_s',1811,ovCalendarChart,'#E74C3C');
+    chartArr.push(ovCalendarChart);
+    ovBirthDeathChart=CreateTimeline('timelineBirthAndDeath', 'timeline', '100%', '220px', 'mainViz')
+    chartArr.push(ovBirthDeathChart);
+    ovMarryChart=CreateTimeline('timelineMarriage', 'timeline', '100%', '220px', 'mainViz')
+    chartArr.push(ovMarryChart);
+    ShowOverview(ovBirth,ovBirthDeathChart,'#E74C3C','line');
+    ShowOverview(ovDeath, ovBirthDeathChart, '#566573', 'line');
+    ShowOverview(ovMarry, ovMarryChart, '#BB8FCE', 'bar');
+}
+
+function loadViewWordCloud(){
+    $("#mainViz").html("");
+}
 
 
