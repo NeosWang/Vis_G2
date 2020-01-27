@@ -8,11 +8,18 @@ function CreateCalendar(id, c, w, h, fatherId) {
     charDiv.setAttribute('style', 'height:' + h);
 
     document.getElementById(fatherId).appendChild(charDiv);
-    return echarts.init(document.getElementById(id));
+    var theChart=echarts.init(document.getElementById(id));
+    theChart.showLoading();
+    return theChart;
 }
 
 function ShowCalendar(table,year,chart,color){
+
     let t= table=='birth_s'?'birth':table=='marriage_s'?'marriage':table;
+    chart.showLoading({ 
+        text:'Data w.r.t '+t.charAt(0).toUpperCase() + t.substring(1)+' On Loading',
+        color:color,
+    })
     $.ajax({
         url: 'backend/api.php',
         data: {
@@ -24,6 +31,7 @@ function ShowCalendar(table,year,chart,color){
         crossDomain: true,
         type: 'get',
         success:function(data){
+            chart.hideLoading();
             let ovCalendar=[];
             for(key in data){
                 ovCalendar.push([key,data[key]])

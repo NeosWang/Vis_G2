@@ -2,42 +2,21 @@ document.write(`<script src='public/js/charts/wordCloud.js' type='text/javascrip
                 <script src='public/js/charts/timeline.js' type='text/javascript'></script>
                 <script src='public/js/charts/tree.js' type='text/javascript'></script>
                 <script src='public/js/charts/calendar.js' type='text/javascript'></script>
-                <script src='public/js/charts/popPyramid.js' type='text/javascript'></script>`)
+                <script src='public/js/charts/popPyramid.js' type='text/javascript'></script>
+               `)
 
 function Onload() {
     GetOverViewData('birth_s');
     GetOverViewData('death');
     GetOverViewData('marriage_s');
+
+    loadViewTimeline();
+
+
     LoadLastNameArr();
     Pop_Pyramid();
-    // ShowTree('4b71b3b8-cd51-fad0-282a-570f0a5c2eb9');
-    ShowTree('27adf2b9-38f5-160c-c774-61d668c94ac2');
+
 }
-
-
-
-
-var treeData;
-
-function ShowTree(rid) {
-    $.ajax({
-        url: 'backend/api.php',
-        data: {
-            func: 'test',
-            table: 'birth_s',
-            rid: rid
-            // rid: '37c96bc1-d7dc-6ae3-a053-33a8b3e0cb8f'
-        },
-        dataType: "json",
-        crossDomain: true,
-        type: 'get',
-        success: function (data) {
-            treeData = data;
-            BulitRadialTree(treeData);
-        }
-    });
-}
-
 
 var totalLastNameAsc = new Array();
 var top10LastName = new Array();
@@ -50,16 +29,14 @@ function LoadLastNameArr() {
         url: 'backend/api.php',
         data: {
             func: 'GetFreqLastName',
-            table: 'birth',
+            table: 'birth_s',
             orderby: 'desc'
         },
         dataType: "json",
         crossDomain: true,
         type: 'get',
-        success: function (data) {
-           
-            let topLnamesforCloud = data.slice(0, 200);
-            // let topLnamesforCloud = data;
+        success: function (data) {     
+            // let topLnamesforCloud = data.slice(0, 200);
             nameFreqDescJson = data;
             for (i = 0; i < data.length; i++) {
                 if (i < 10) {
@@ -68,9 +45,9 @@ function LoadLastNameArr() {
                 totalLastNameAsc.push(data[i]['name']);
             }
             totalLastNameAsc.sort();
-
-            chartWordCloud = echarts.init(document.getElementById('chartWordCloud'));
-            LoadWordCloud(chartWordCloud, topLnamesforCloud,1,255,0,0);
+            if($('#idWordCloudChart').length){
+                loadViewWordCloud()
+            }
             $('#popLname10').removeClass().addClass('fa fa-flip-horizontal fa-signal')
                 .attr('onClick', 'ShowTop10LastName();')
                 .attr('data-toggle', 'tooltip')
@@ -152,9 +129,32 @@ function ShowPersonByLnameJson() {
 }
 
 
-// to be extended!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+
 function ChoosePerson(a) {
-    console.log($(a).attr('value'));
+    var rid=$(a).attr('value');
+    $.ajax({
+        url: 'backend/api.php',
+        data: {
+            func: 'GetFullPersonalDetail',
+            rid: rid
+        },
+        dataType: "json",
+        crossDomain: true,
+        type: 'get',
+        success: function (data) {   
+            $('#outputPD').attr('value',data['self']['rid']);
+            $('#outputName').html(NameFormat(data['self']['fname']) + NameFormat(data['self']['pname'])+NameFormat(data['self']['lname'])  );
+            $('#outputGender').html(data['self']['gender']==0?'female':'male');
+            $('#outputDOB').html(data['self']['dob']);
+            $('#outputDOD').html(data['self']['dod']==null?'no data':data['self']['dod']);
+            $('#outputPlace').html(data['self']['place']);
+            $('#outputFather').html(NameFormat(data['parent']['father']['fname']) + NameFormat(data['parent']['father']['pname'])+NameFormat(data['parent']['father']['lname']));
+            $('#outputMother').html(NameFormat(data['parent']['mother']['fname']) + NameFormat(data['parent']['mother']['pname'])+NameFormat(data['parent']['mother']['lname']));
+
+        }
+    });
+    
+
 }
 
 
@@ -256,11 +256,16 @@ function SelectLastName(html) {
 
 
 
-
-
-
 // resize images of main panel while click collapse
 function ClickCollapse() {
+    setTimeout(() => {
+        chartArr.forEach(v => {
+            v.resize()
+        });
+    }, 600);
+}
+
+window.onresize = function() {
     setTimeout(() => {
         chartArr.forEach(v => {
             v.resize()
@@ -271,14 +276,15 @@ function ClickCollapse() {
 var chartArr=[];
 
 function loadViewTimeline(){
+    chartArr.splice(0, chartArr.length);
     $("#mainViz").html("");
 
-    ovCalendarChart=CreateCalendar('calendarYear', 'calendar', '100%', '380px', 'mainViz')
+    ovCalendarChart=CreateCalendar('idCalendar', 'calendar', '100%', '380px', 'mainViz')
     ShowCalendar('birth_s',1811,ovCalendarChart,'#E74C3C');
     chartArr.push(ovCalendarChart);
-    ovBirthDeathChart=CreateTimeline('timelineBirthAndDeath', 'timeline', '100%', '220px', 'mainViz')
+    ovBirthDeathChart=CreateTimeline('idTimelineBirthAndDeath', 'timeline', '100%', '220px', 'mainViz')
     chartArr.push(ovBirthDeathChart);
-    ovMarryChart=CreateTimeline('timelineMarriage', 'timeline', '100%', '220px', 'mainViz')
+    ovMarryChart=CreateTimeline('idTimelineMarriage', 'timeline', '100%', '220px', 'mainViz')
     chartArr.push(ovMarryChart);
     ShowOverview(ovBirth,ovBirthDeathChart,'#E74C3C','line');
     ShowOverview(ovDeath, ovBirthDeathChart, '#566573', 'line');
@@ -286,7 +292,51 @@ function loadViewTimeline(){
 }
 
 function loadViewWordCloud(){
+    chartArr.splice(0, chartArr.length);
     $("#mainViz").html("");
+
+    [ovWordCloudChart,ovWordBarChart] = CreateWordCloud('idWordCloudChart','idWordBarChart','mainViz');
+    ShowWordCloud(ovWordCloudChart,nameFreqDescJson,1,255,0,0);
+    ShowWordBar(ovWordBarChart,nameFreqDescJson);
+    chartArr.push(ovWordCloudChart);
+    chartArr.push(ovWordBarChart);
 }
 
+function loadViewTree(){
+    let rid=$('#outputPD').attr('value');
+    if(rid!=null){
+        chartArr.splice(0, chartArr.length);
+        $("#mainViz").html("");
+        
+        ovTreeChart=CreateTree('idTreeChart','mainViz');
+        chartArr.push(ovTreeChart);
+        ShowTree(rid,ovTreeChart);
+    }else{
+        alert('Search a person through Input panel')
+    }
+}
 
+function SwitchTree(button) {
+    if ($(button).val() == '0') {
+        $(button).val('1');
+        BulitHorizontalTree(treeData,ovTreeChart);
+    } else {
+        $(button).val('0');
+        BulitRadialTree(treeData,ovTreeChart);
+    }
+}
+
+function loadViewStat(){
+    chartArr.splice(0, chartArr.length);
+    $("#mainViz").html(`
+        <div id="visApp">
+            <div class="row ml-5" style="height:500px;">
+                <div id="pymaid" class="col pymaid-container" style="padding-right: 20px"></div>
+            </div>
+        </div>
+        <div id="timenets-container" style=" width:100%; height:300px;text-align:center;">
+            <script src="public/js/charts/timeNets.js"></script>
+        </div> 
+    `);
+    ShowPopulationPyramid(pyramidData);
+}

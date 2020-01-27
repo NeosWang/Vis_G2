@@ -60,8 +60,8 @@ function ShowOverview(data, chart, color, type) {
         });
         let dataZoom = [{
                 show: true,
-                start: 0,
-                end: 50
+                start: 25,
+                end: 75
             },
             {
                 show: true,

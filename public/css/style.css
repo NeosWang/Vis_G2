@@ -367,7 +367,7 @@ a .searchInput::-ms-reveal {
 
 #personList {
     width: 300px;
-    max-height: 350px;
+    max-height: 600px;
     /* overflow-y: scroll; */
     border-top: 1px solid #EC7063;
     border-bottom: 1px solid #EC7063;
@@ -445,4 +445,42 @@ zing-grid[loading] {
     margin: -1px 0 0 0;
     top: 100%;
     left: 0;
+}
+
+
+
+.outputText{
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+
+
+.box {
+    width: 100%;
+}
+.scale_l {
+    float: left;
+    width: 70%;
+    padding-bottom: 55%;
+    height: 0;
+    position: relative;
+}
+.scale_r {
+    float: right;
+    width: 30%;
+    padding-bottom: 60%;
+    height: 0;
+    position: relative;
+}
+.scale {
+    width: 100%;
+    padding-bottom: 60%;
+    height: 0;
+    position: relative;
+}
+.item {
+    width: 100%;
+    height: 100%;
+    position: absolute;
 }

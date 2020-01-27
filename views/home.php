@@ -28,10 +28,12 @@ include $rootPath . '/views/tpl/header.php';
 							<span></span>
 						</button>
 						<div>
-							<div>
-								<button type="button" class="btn btn-outline-primary" onclick="loadViewTimeline()"><i class="fa fa-bar-chart fa-lg"></i></button>
-								<button type="button" class="btn btn-outline-info" onclick="loadViewWordCloud()"><i class="fa fa-cloud fa-lg"></i></button>
+							<div class="ml-5">
+								<button type="button" class="btn btn-outline-primary ml-1" style="width:50px;" onclick="loadViewTimeline()"><i class="fa fa-line-chart fa-lg"></i></button>
+								<button type="button" class="btn btn-outline-info ml-1" style="width:50px;" onclick="loadViewWordCloud()"><i class="fa fa-cloud fa-lg"></i></button>
+								<button type="button" class="btn btn-outline-success ml-1" style="width:50px;" onclick="loadViewStat()"><i class="fa fa-align-center fa-lg "></i></button>
 							</div>
+
 						</div>
 					</nav>
 				</div>
@@ -39,92 +41,24 @@ include $rootPath . '/views/tpl/header.php';
 
 
 				<div class="row">
-					<div id="mainViz" class="pr-5" style='width:100%;height:100%'>
+					<div id="mainViz" class="pl-2 pr-4" style='width:100%;height:100%'>
 					</div>
 				</div>
 
-
-
-
-
-
-
-
-
-				<div id="visApp">
-					<div class="row" style="height:400px;">
-						<!-- <div id="main0" style=" width:100%;height:400px;text-align:center;"> -->
-
-						<div id="chartWordCloud" class="col pl-3"></div>
-
-
+				<!-- <div id="visApp">
+					<div class="row" style="height:500px;">
 						<div id="pymaid" class="col pymaid-container" style="padding-right: 20px"></div>
-						<!-- </div> -->
 					</div>
-					<div>
-						<button style="width:60px;height:40px" onclick="SwitchLayout(1)">
-							<img src="./public/images/map.jpg" style="width:100%;height:100%">
-						</button>
-						<button style="width:60px;height:40px" onclick="SwitchLayout(2)">
-							<img src="./public/images/house.jpg" style="width:100%;height:100%">
-						</button>
-						<button style="width:60px;height:40px" onclick="SwitchRandomColor()">
-							<img src="./public/images/color.jpg" style="width:100%;height:100%">
-						</button>
-					</div>
-
-
-					<div id="timenets-container" style=" width:100%; height:300px;text-align:center;">
-						<script src="public/js/charts/timeNets.js"></script>
-					</div>
-
-					<div class="row" style="height:1000px;">
-						<div class="col-1 pl-5 pt-5">
-							<button onclick=" SwitchTree(this)" value='0'>switch</button>
-							<button onclick=" ChangeSymbol()" value='0'>encode</button>
-						</div>
-						<script>
-							function SwitchTree(button) {
-								if ($(button).val() == '0') {
-									$(button).val('1');
-									BulitHorizontalTree(treeData);
-								} else {
-									$(button).val('0');
-									BulitRadialTree(treeData);
-								}
-							}
-						</script>
-						<div id="radialTree" class="col-11"></div>
-					</div>
-
-
-
-					<div class="row">
-						<div id="chartBirth" class="timeline" style=" width:100%;height:350px;">
-						</div>
-					</div>
-
-					<div class="row mb-5">
-						<div id="chartMarriage" class="timeline" style=" width:100%;height:200px;">
-						</div>
-					</div>
-					<script type="text/javascript">
-						var radialTree = echarts.init(document.getElementById('radialTree'));
-						var chartWordCloud = echarts.init(document.getElementById('chartWordCloud'));
-						window.onresize = function() {
-							setTimeout(() => {
-								chartArr.forEach(v => {
-									v.resize()
-								});
-							}, 600);
-						}
-					</script>
 				</div>
-
-
+				<div id="timenets-container" style=" width:100%; height:300px;text-align:center;">
+					<script src="public/js/charts/timeNets.js"></script>
+				</div> -->
 			</div>
-			<!-- Main Content: End -->
+
+
 		</div>
+		<!-- Main Content: End -->
+	</div>
 	</div>
 </body>
 

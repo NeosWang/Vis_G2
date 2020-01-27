@@ -1,6 +1,29 @@
-function BulitRadialTree(data) {
-    radialTree.clear();
-    radialTree.setOption(option = {
+var ovTreeChart;
+var treeData;
+
+function ShowTree(rid,chart) {
+    chart.showLoading();
+    $.ajax({
+        url: 'backend/api.php',
+        data: {
+            func: 'test',
+            table: 'birth_s',
+            rid: rid
+        },
+        dataType: "json",
+        crossDomain: true,
+        type: 'get',
+        success: function (data) {
+            chart.hideLoading();
+            treeData = data;
+            BulitRadialTree(treeData,chart);
+        }
+    });
+}
+
+function BulitRadialTree(data,chart) {
+    chart.clear();
+    chart.setOption(option = {
         tooltip: {
             trigger: 'item',
             triggerOn: 'mousemove'
@@ -16,21 +39,8 @@ function BulitRadialTree(data) {
                 normal: {
                     fontSize: 9,
                     formatter: function (param) {
-                        // if (param.data.gender == 0) {
-                        //     return `{a|${param.data.fname} ${param.data.lname}}`;
-                        // } else if (param.data.gender == 1) {
-                        //     return `{b|${param.data.fname} ${param.data.lname}}`;
-                        // }
                         return `${param.data.fname} ${param.data.lname}`;
-                    },
-                    // rich: {
-                    //     a: {
-                    //         color: 'red'
-                    //     },
-                    //     b: {
-                    //         color: 'blue'
-                    //     }
-                    // }
+                    }
                 }
             },
             emphasis: {
@@ -54,7 +64,7 @@ function BulitRadialTree(data) {
             symbol: 'emptyCircle',
             symbolSize: 7,
 
-            initialTreeDepth: 8,
+            initialTreeDepth: 2,
 
             animationDurationUpdate: 750
 
@@ -72,19 +82,9 @@ function help(item) {
 }
 
 
-function ChangeSymbol() {
-    let op = radialTree.getOption();
+function ChangeSymbol(chart) {
+    let op = chart.getOption();
     help(op.series[0].data[0]);
-    // op.series[0].data[0].children.map((item) => {
-    //         item.symbol=item.gender==0?'rect':item.gender==1?'triangle':'circle';
-    //         if (item.children) {
-    //             item.children.map(i => {
-    //                 i.symbol=i.gender==0?'rect':i.gender==1?'triangle':'circle';
-    //             })
-    //         }
-    //     }
-
-    // )
     op.series[0].symbolSize = 12;
     op.series[0].lineStyle.width = 3;
     op.series[0].label.formatter = function (param) {
@@ -103,13 +103,13 @@ function ChangeSymbol() {
             color: 'blue'
         }
     }
-    radialTree.clear();
-    radialTree.setOption(op);
+    chart.clear();
+    chart.setOption(op);
 }
 
-function BulitHorizontalTree(data) {
-    radialTree.clear();
-    radialTree.setOption(option = {
+function BulitHorizontalTree(data,chart) {
+    chart.clear();
+    chart.setOption(option = {
         tooltip: {
             trigger: 'item',
             triggerOn: 'mousemove'
@@ -120,7 +120,6 @@ function BulitHorizontalTree(data) {
             bottom: '20%',
             right: '20%',
             data: [data],
-
             label: {
                 normal: {
                     position: 'left',
@@ -128,31 +127,18 @@ function BulitHorizontalTree(data) {
                     align: 'right',
                     fontSize: 9,
                     formatter: function (param) {
-                        // if (param.data.gender == 0) {
-                        //     return `{a|${param.data.fname} ${param.data.lname}}`;
-                        // } else if (param.data.gender == 1) {
-                        //     return `{b|${param.data.fname} ${param.data.lname}}`;
-                        // }
                         return `${param.data.fname} ${param.data.lname}`;
-                    },
-                    // rich: {
-                    //     a: {
-                    //         color: 'red'
-                    //     },
-                    //     b: {
-                    //         color: 'blue'
-                    //     }
-                    // }
+                    }            
                 }
             },
             leaves: {
-                label: {
-                    normal: {
+                // label: {
+                    label: {
                         position: 'right',
                         verticalAlign: 'middle',
                         align: 'left'
                     }
-                }
+                // }
             },
             tooltip: {
                 trigger: 'item',
@@ -182,3 +168,28 @@ function BulitHorizontalTree(data) {
         }]
     });
 }
+
+
+function CreateTree(id, fatherId){
+    var box = document.createElement("div");
+    box.setAttribute('class','box');
+
+    var scale=document.createElement("div");
+    scale.setAttribute('class','scale');
+    
+    var item=document.createElement("div");
+    item.setAttribute('class','item');
+    item.setAttribute('id',id);
+
+    scale.appendChild(item);
+    box.appendChild(scale);
+    box.innerHTML+=`
+    <div class='pl-5'>
+        <button onclick=" SwitchTree(this)" value='0'>switch</button>
+        <button onclick=" ChangeSymbol(ovTreeChart)" value='0'>encode</button>
+    </div>`;
+    document.getElementById(fatherId).appendChild(box);
+    var theChart=echarts.init(document.getElementById(id));
+    return theChart;
+}
+

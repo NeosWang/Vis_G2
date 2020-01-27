@@ -1,6 +1,6 @@
 <nav class="panel" id="sidebarLeft">
     <div class="sidebar-header">
-        <h3>Input panel</h3>
+        <h3><i class="fa fa-pencil-square-o" ></i> Input</h3>
     </div>
     <ul class="list-unstyled components">
         <li>
